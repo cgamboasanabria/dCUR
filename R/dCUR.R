@@ -1,6 +1,7 @@
 dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, dinamico_filas=FALSE, paralelo=FALSE,...){
   #######Esta parte es igual al inicio de la función CUR, pero se pone aquí para ahorrar tiempo ejecutándolo una sola vez, la función CUR_d2 es similar a CUR solo que sin la parte de selección de variables.
   #Selección de variables
+  require(parallel)
   argumentos <- match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
 
   expresion <- sapply(argumentos[c("variables", "correlacion")], as.expression) %>% paste()
@@ -68,21 +69,63 @@ dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, d
       arrange(k, columnas, filas)
   })
 
-  ##SECUENCIAL###
 
-  mapply(CUR_d2,
-         k=escenarios$k,
-         filas=escenarios$filas,
-         columnas=escenarios$columnas,
-         MoreArgs = list(metodo=argumentos$metodo,
-                         correlacion=correlacion,
-                         tipo_correlacion=argumentos$tipo_correlacion,
-                         descomposicion=descomposicion),
-         SIMPLIFY = FALSE)
+  if(!paralelo){
+    ##SECUENCIAL###
+    producto <- mapply(CUR_d2,
+                       k=escenarios$k,
+                       filas=escenarios$filas,
+                       columnas=escenarios$columnas,
+                       MoreArgs = list(metodo=argumentos$metodo,
+                                       correlacion=correlacion,
+                                       tipo_correlacion=argumentos$tipo_correlacion,
+                                       descomposicion=descomposicion,
+                                       data=data,
+                                       nombre_cor=nombre_cor,
+                                       nombres=nombres,
+                                       variancia=var_expl),
+                       SIMPLIFY = FALSE)
+    names(producto) <- paste("k", escenarios$k,
+                             "columnas", argumentos$columnas,
+                             "filas", argumentos$filas, sep="_")
+    producto
+  }else({
+    #Nombres de los objetos a exportar a cada cluster
+
+    #obj <- sapply(as.list(match.call()), paste)
+    #pos <- which(names(obj) %in% c("serie", "validacion"))
+
+    #Generar los cluster
+    clp <- makeCluster(detectCores(logical = FALSE), type = "SOCK", useXDR=FALSE)
+    #clusterExport(clp, varlist = c(obj[pos], "medidas.arima", "modelo.arima"))
+    clusterEvalQ(clp, {
+      carlians::requeridos(readr, data.table, corpcor, MASS, mclust, ppcor, stackoverflow, dCUR, dplyr)
+    })
+    #Proceso en paralelo
+    producto <- clusterMap(cl=clp, fun = CUR_d2,
+                           k=escenarios$k,
+                           filas=escenarios$filas,
+                           columnas=escenarios$columnas,
+                           MoreArgs = list(metodo=argumentos$metodo,
+                                           correlacion=correlacion,
+                                           tipo_correlacion=argumentos$tipo_correlacion,
+                                           descomposicion=descomposicion,
+                                           data=data,
+                                           nombre_cor=nombre_cor,
+                                           nombres=nombres,
+                                           variancia=var_expl),
+                           SIMPLIFY = FALSE, .scheduling = "dynamic")
+    stopCluster(clp)
+    names(producto) <- paste("k", escenarios$k,
+                             "columnas", argumentos$columnas,
+                             "filas", argumentos$filas, sep="_")
+    producto
+  })
+
 
 }
 
-CUR_d2 <- function(k=NULL, filas, columnas, metodo="muestral", correlacion=NULL,tipo_correlacion=c("parcial", "semiparcial"),descomposicion,...){
+CUR_d2 <- function(data,k=NULL, filas, columnas, metodo, correlacion=NULL,tipo_correlacion,descomposicion,nombre_cor,nombres,variancia,...){
 
   ###Leverage columnas
 
@@ -129,8 +172,6 @@ CUR_d2 <- function(k=NULL, filas, columnas, metodo="muestral", correlacion=NULL,
 
   ####Paso de seleccion ####
   if(metodo=="muestral"){
-    columnas <- ceiling(columnas*nrow(leverage_columnas_orden))
-    filas <- ceiling(filas*nrow(leverage_filas_orden))
 
     leverage_columnas_orden <- leverage_columnas_orden[1:columnas,]
     index_col <- leverage_columnas_orden$nombres
@@ -157,6 +198,8 @@ CUR_d2 <- function(k=NULL, filas, columnas, metodo="muestral", correlacion=NULL,
 
   #Cálculo de CUR
 
+  leverage_columnas_orden
+
   C_cur <- data[,index_col] %>% as.matrix
   R_cur <- data[index_fil, ] %>% as.matrix
   U_cur <- ginv(C_cur)%*%as.matrix(data)%*%ginv(R_cur)
@@ -169,18 +212,18 @@ CUR_d2 <- function(k=NULL, filas, columnas, metodo="muestral", correlacion=NULL,
     #D=descomposicion$d,
     #V=descomposicion$v,
     #sigma=sigma,
-    varianza_explicada=var_expl,
+    #varianza_explicada=variancia,
     #leverage_columnas=leverage_columnas,
     #leverage_filas=leverage_filas,
     #A_hat=A_hat,
     #C_cur=C_cur,
     #R_cur=R_cur,
     #U_cur=U_cur,
-    CUR=CUR,
+    #CUR=CUR,
     error_absoluto=error_abs,
-    error_relativo=error_rel,
-    leverage_columnas_orden=leverage_columnas_orden,
-    leverage_filas_orden=leverage_filas_orden#,
+    error_relativo=error_rel#,
+    #leverage_columnas_orden=leverage_columnas_orden,
+    #leverage_filas_orden=leverage_filas_orden#,
     #densidad_columnas=densidad_columnas,
     #densidad_filas=densidad_filas
   )
