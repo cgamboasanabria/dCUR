@@ -1,7 +1,15 @@
 dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, dinamico_filas=FALSE, paralelo=FALSE,...){
   #######Esta parte es igual al inicio de la función CUR, pero se pone aquí para ahorrar tiempo ejecutándolo una sola vez, la función CUR_d2 es similar a CUR solo que sin la parte de selección de variables.
   #Selección de variables
-  require(parallel)
+
+  require(data.table)
+  require(corpcor)
+  require(MASS)
+  require(mclust)
+  require(ppcor)
+  require(stackoverflow)
+  require(dplyr)
+
   argumentos <- match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
 
   expresion <- sapply(argumentos[c("variables", "correlacion")], as.expression) %>% paste()
@@ -90,18 +98,18 @@ dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, d
                              "filas", argumentos$filas, sep="_")
     producto
   }else({
-    #Nombres de los objetos a exportar a cada cluster
-
-    #obj <- sapply(as.list(match.call()), paste)
-    #pos <- which(names(obj) %in% c("serie", "validacion"))
-
-    #Generar los cluster
+    require(parallel)
     clp <- makeCluster(detectCores(logical = FALSE), type = "SOCK", useXDR=FALSE)
-    #clusterExport(clp, varlist = c(obj[pos], "medidas.arima", "modelo.arima"))
     clusterEvalQ(clp, {
-      carlians::requeridos(readr, data.table, corpcor, MASS, mclust, ppcor, stackoverflow, dCUR, dplyr)
+      require(data.table)
+      require(corpcor)
+      require(MASS)
+      require(mclust)
+      require(ppcor)
+      require(stackoverflow)
+      require(dplyr)
     })
-    #Proceso en paralelo
+    #PARALELO
     producto <- clusterMap(cl=clp, fun = CUR_d2,
                            k=escenarios$k,
                            filas=escenarios$filas,
