@@ -1,6 +1,7 @@
-CUR <- function(data, variables, k=NULL, filas, columnas, estandarizar=FALSE, metodo="muestral", correlacion=NULL,tipo_correlacion=c("parcial", "semiparcial"),...){
+dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, dinamico_filas=FALSE, paralelo=FALSE,...){
+  #######Esta parte es igual al inicio de la función CUR, pero se pone aquí para ahorrar tiempo ejecutándolo una sola vez, la función CUR_d2 es similar a CUR solo que sin la parte de selección de variables.
   #Selección de variables
-  argumentos <- match.call.defaults(expand.dots = FALSE) %>% as.list
+  argumentos <- match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
 
   expresion <- sapply(argumentos[c("variables", "correlacion")], as.expression) %>% paste()
   correlacion <- eval(parse(text = paste("dplyr::select(data,", expresion[2], ")")))
@@ -21,6 +22,11 @@ CUR <- function(data, variables, k=NULL, filas, columnas, estandarizar=FALSE, me
   #Variancia explicada
   var_expl <- cumsum(diag(sigma)/sum(diag(sigma)))*100
 
+  #Se define el valor de k para hacerlo dinámico
+  k <- if(!("k"%in%names(argumentos))){
+    ncol(data)-1
+  }else(argumentos$k)
+
   #Puntaje leverage
 
   k <- if(is.null(k)){
@@ -30,6 +36,53 @@ CUR <- function(data, variables, k=NULL, filas, columnas, estandarizar=FALSE, me
       min(which((var_expl>=k*100) == TRUE))
     }else(k)
   }
+
+  #######################################Proceso dinámico######################################
+  #Se definen los escenarios
+
+  escenarios <-if(argumentos$metodo=="muestral"){
+    columnas <- ncol(data)*argumentos$columnas
+    filas <- nrow(data)*argumentos$filas
+
+    if(dinamico_columnas){
+      if(dinamico_filas){
+        expand.grid(k=1:k, columnas=1:columnas, filas=1:filas) %>%
+          arrange(k, columnas, filas)
+      }else({
+        expand.grid(k=1:k, columnas=1:columnas, filas=filas) %>%
+          arrange(k, columnas, filas)
+      })
+    }else({
+      if(dinamico_filas){
+        expand.grid(k=1:k, columnas=columnas, filas=1:filas) %>%
+          arrange(k, columnas, filas)
+      }else({
+        expand.grid(k=1:k, columnas=columnas, filas=filas) %>%
+          arrange(k, columnas, filas)
+      })
+    })
+  }else({
+    columnas <- argumentos$columnas
+    filas <- argumentos$filas
+    expand.grid(k=1:k, filas=filas, columnas=columnas) %>%
+      arrange(k, columnas, filas)
+  })
+
+  ##SECUENCIAL###
+
+  mapply(CUR_d2,
+         k=escenarios$k,
+         filas=escenarios$filas,
+         columnas=escenarios$columnas,
+         MoreArgs = list(metodo=argumentos$metodo,
+                         correlacion=correlacion,
+                         tipo_correlacion=argumentos$tipo_correlacion,
+                         descomposicion=descomposicion),
+         SIMPLIFY = FALSE)
+
+}
+
+CUR_d2 <- function(k=NULL, filas, columnas, metodo="muestral", correlacion=NULL,tipo_correlacion=c("parcial", "semiparcial"),descomposicion,...){
 
   ###Leverage columnas
 
@@ -131,6 +184,4 @@ CUR <- function(data, variables, k=NULL, filas, columnas, estandarizar=FALSE, me
     #densidad_columnas=densidad_columnas,
     #densidad_filas=densidad_filas
   )
-
-
 }

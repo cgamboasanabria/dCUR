@@ -1,16 +1,7 @@
-var_exp <- function(data,variables,estandarizar=FALSE){
+var_exp <- function(data, estandarizar=FALSE,...){
   #Selección de variables
 
-  vars <- as.list(match.call())[-1][-1]
-  vars <- vars[-c(length(vars):(length(vars)-0))] #cambiar el 1 por la cantidad de argumentos después de k
-  vars <- sapply(vars, function(x){
-    if(length(x)>1){
-      paste(paste(x)[c(2,1,3)], collapse = "")
-    }else(paste(x))
-  }) %>%
-    paste(collapse = ", ")
-  data <- eval(parse(text = paste("dplyr::select(data,", vars, ")")))
-  nombres <- names(data)
+  data <- dplyr::select(data,...)
 
   if(estandarizar){
     data <- scale(data)
