@@ -1,15 +1,12 @@
-CUR <- function(data, variables, k=NULL, k_porc=NULL, filas, columnas, estandarizar=FALSE, metodo="muestral"){
+CUR <- function(data, variables, k=NULL, filas, columnas, estandarizar=FALSE, metodo="muestral", correlacion=NULL,tipo_correlacion=c("parcial", "semiparcial"),...){
   #Selección de variables
+  argumentos <- match.call.defaults(expand.dots = FALSE) %>% as.list
 
-  vars <- as.list(match.call())[-1][-1][[1]]
-  vars <- sapply(vars, function(x){
-    if(length(x)>1){
-      paste(paste(x), collapse = "")
-    }else(paste(x))
-  })[c(2,1,3)] %>%
-    paste(collapse = "")
-  data <- eval(parse(text = paste("dplyr::select(data,", vars, ")")))
+  expresion <- sapply(argumentos[c("variables", "correlacion")], as.expression) %>% paste()
+  correlacion <- eval(parse(text = paste("dplyr::select(data,", expresion[2], ")")))
+  data <- eval(parse(text = paste("dplyr::select(data,", expresion[1], ")")))
   nombres <- names(data)
+  nombre_cor <- names(correlacion)
 
   if(estandarizar){
     data <- scale(data)
@@ -24,31 +21,39 @@ CUR <- function(data, variables, k=NULL, k_porc=NULL, filas, columnas, estandari
   #Variancia explicada
   var_expl <- cumsum(diag(sigma)/sum(diag(sigma)))*100
 
-
   #Puntaje leverage
 
-  ##Si solo se especifica el porcentaje para k
-  if(is.null(k) & !is.null(k_porc)){
-    k <- min(which((var_expl>=k_porc) == TRUE))
-  }
-  ##Si no se especifica k ni su porcentaje se toma el 80%
-  if(is.null(k) & is.null(k_porc)){
-    k <- min(which((var_expl>=80) == TRUE))
-  }
-  ## Si solo se define un valor entero de k
-  if(!is.null(k) & is.null(k_porc)){
-    k <- k
+  k <- if(is.null(k)){
+    min(which((var_expl>=80) == TRUE))
+  }else{
+    if(k%%1!=0){
+      min(which((var_expl>=k*100) == TRUE))
+    }else(k)
   }
 
   ###Leverage columnas
 
-  if(k==1 & is.null(k_porc)){
+  if(k==1){
     leverage_columnas <- descomposicion$v[, 1]^2 %>% matrix(.,nrow(descomposicion$v),1)
   }else({
     leverage_columnas <- descomposicion$v[, 1:k]^2
   })
 
-  leverage_columnas_orden <- rowSums(leverage_columnas)/k*1000
+  ####### Correlaciones
+
+  if(ncol(correlacion)>0){
+    correlacion <- cbind(data, correlacion)
+    posicion <- which(names(correlacion)==nombre_cor)
+
+    if(tipo_correlacion=="parcial"){
+      correlacion <- pcor(correlacion,...)$estimate[,posicion][-posicion]
+      leverage_columnas_orden <- ((rowSums(leverage_columnas)/k)/(1-correlacion^2))*1000
+    }
+    if(tipo_correlacion=="semiparcial"){
+      correlacion <- spcor(correlacion,...)$estimate[,posicion][-posicion]
+      leverage_columnas_orden <- ((rowSums(leverage_columnas)/k)/(1-correlacion^2))*1000
+    }
+  }else({leverage_columnas_orden <- rowSums(leverage_columnas)/k*1000})
 
   leverage_columnas_orden <- data.frame(leverage_columnas=leverage_columnas_orden,
                                         nombres=nombres) %>%
@@ -56,7 +61,7 @@ CUR <- function(data, variables, k=NULL, k_porc=NULL, filas, columnas, estandari
 
   ###Leverage filas
 
-  if(k==1 & is.null(k_porc)){
+  if(k==1){
     leverage_filas <- descomposicion$u[, 1]^2%>% matrix(.,nrow(descomposicion$u),1)
   }else({
     leverage_filas <- descomposicion$u[, 1:k]^2 #No puse la ponderación
