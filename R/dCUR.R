@@ -1,4 +1,4 @@
-dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, dinamico_filas=FALSE, paralelo=FALSE,...){
+dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dynamic_rows=FALSE, parallelize=FALSE,...){
   #######Esta parte es igual al inicio de la función CUR, pero se pone aquí para ahorrar tiempo ejecutándolo una sola vez, la función CUR_d2 es similar a CUR solo que sin la parte de selección de variables.
   #Selección de variables
 
@@ -10,31 +10,31 @@ dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, d
   require(stackoverflow)
   require(dplyr)
 
-  argumentos <- match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
+  fun_args <- match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
 
-  expresion <- sapply(argumentos[c("variables", "correlacion")], as.expression) %>% paste()
-  correlacion <- eval(parse(text = paste("dplyr::select(data,", expresion[2], ")")))
-  data <- eval(parse(text = paste("dplyr::select(data,", expresion[1], ")")))
-  nombres <- names(data)
-  nombre_cor <- names(correlacion)
+  test_fun <- sapply(fun_args[c("variables", "correlation")], as.expression) %>% paste()
+  correlation <- eval(parse(text = paste("dplyr::select(data,", test_fun[2], ")")))
+  data <- eval(parse(text = paste("dplyr::select(data,", test_fun[1], ")")))
+  var_names <- names(data)
+  cor_name <- names(correlation)
 
-  if(estandarizar){
+  if(standardize){
     data <- scale(data)
   }
 
   #Descomposición
-  descomposicion <- svd(data)
-  sigma <- t(descomposicion$u)%*%as.matrix(data)%*%descomposicion$v
-  A_hat <- descomposicion$u%*%sigma%*%t(descomposicion$v) %>% as.data.frame()
-  names(A_hat) <- nombres
+  decomposition <- svd(data)
+  sigma <- t(decomposition$u)%*%as.matrix(data)%*%decomposition$v
+  A_hat <- decomposition$u%*%sigma%*%t(decomposition$v) %>% as.data.frame()
+  names(A_hat) <- var_names
 
-  #Variancia explicada
+  #variance explicada
   var_expl <- cumsum(diag(sigma)/sum(diag(sigma)))*100
 
   #Se define el valor de k para hacerlo dinámico
-  k <- if(!("k"%in%names(argumentos))){
+  k <- if(!("k"%in%names(fun_args))){
     ncol(data)-1
-  }else(argumentos$k)
+  }else(fun_args$k)
 
   #Puntaje leverage
 
@@ -47,56 +47,56 @@ dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, d
   }
 
   #######################################Proceso dinámico######################################
-  #Se definen los escenarios
+  #Se definen los stages
 
-  escenarios <-if(argumentos$metodo=="muestral"){
-    columnas <- ncol(data)*argumentos$columnas
-    filas <- nrow(data)*argumentos$filas
+  stages <-if(fun_args$cur_method=="sample_cur"){
+    columns <- ncol(data)*fun_args$columns
+    rows <- nrow(data)*fun_args$rows
 
-    if(dinamico_columnas){
-      if(dinamico_filas){
-        expand.grid(k=1:k, columnas=1:columnas, filas=1:filas) %>%
-          arrange(k, columnas, filas)
+    if(dynamic_columns){
+      if(dynamic_rows){
+        expand.grid(k=1:k, columns=1:columns, rows=1:rows) %>%
+          arrange(k, columns, rows)
       }else({
-        expand.grid(k=1:k, columnas=1:columnas, filas=filas) %>%
-          arrange(k, columnas, filas)
+        expand.grid(k=1:k, columns=1:columns, rows=rows) %>%
+          arrange(k, columns, rows)
       })
     }else({
-      if(dinamico_filas){
-        expand.grid(k=1:k, columnas=columnas, filas=1:filas) %>%
-          arrange(k, columnas, filas)
+      if(dynamic_rows){
+        expand.grid(k=1:k, columns=columns, rows=1:rows) %>%
+          arrange(k, columns, rows)
       }else({
-        expand.grid(k=1:k, columnas=columnas, filas=filas) %>%
-          arrange(k, columnas, filas)
+        expand.grid(k=1:k, columns=columns, rows=rows) %>%
+          arrange(k, columns, rows)
       })
     })
   }else({
-    columnas <- argumentos$columnas
-    filas <- argumentos$filas
-    expand.grid(k=1:k, filas=filas, columnas=columnas) %>%
-      arrange(k, columnas, filas)
+    columns <- fun_args$columns
+    rows <- fun_args$rows
+    expand.grid(k=1:k, rows=rows, columns=columns) %>%
+      arrange(k, columns, rows)
   })
 
 
-  if(!paralelo){
+  if(!parallelize){
     ##SECUENCIAL###
-    producto <- mapply(CUR_d2,
-                       k=escenarios$k,
-                       filas=escenarios$filas,
-                       columnas=escenarios$columnas,
-                       MoreArgs = list(metodo=argumentos$metodo,
-                                       correlacion=correlacion,
-                                       tipo_correlacion=argumentos$tipo_correlacion,
-                                       descomposicion=descomposicion,
+    result <- mapply(CUR_d2,
+                       k=stages$k,
+                       rows=stages$rows,
+                       columns=stages$columns,
+                       MoreArgs = list(cur_method=fun_args$cur_method,
+                                       correlation=correlation,
+                                       correlation_type=fun_args$correlation_type,
+                                       decomposition=decomposition,
                                        data=data,
-                                       nombre_cor=nombre_cor,
-                                       nombres=nombres,
-                                       variancia=var_expl),
+                                       cor_name=cor_name,
+                                       var_names=var_names,
+                                       variance=var_expl),
                        SIMPLIFY = FALSE)
-    names(producto) <- paste("k", escenarios$k,
-                             "columnas", argumentos$columnas,
-                             "filas", argumentos$filas, sep="_")
-    producto
+    names(result) <- paste("k", stages$k,
+                             "columns", fun_args$columns,
+                             "rows", fun_args$rows, sep="_")
+    result
   }else({
     require(parallel)
     clp <- makeCluster(detectCores(logical = FALSE), type = "SOCK", useXDR=FALSE)
@@ -109,104 +109,104 @@ dCUR <- function(data, variables, estandarizar=FALSE, dinamico_columnas=FALSE, d
       require(stackoverflow)
       require(dplyr)
     })
-    #PARALELO
-    producto <- clusterMap(cl=clp, fun = CUR_d2,
-                           k=escenarios$k,
-                           filas=escenarios$filas,
-                           columnas=escenarios$columnas,
-                           MoreArgs = list(metodo=argumentos$metodo,
-                                           correlacion=correlacion,
-                                           tipo_correlacion=argumentos$tipo_correlacion,
-                                           descomposicion=descomposicion,
+    #parallelize
+    result <- clusterMap(cl=clp, fun = CUR_d2,
+                           k=stages$k,
+                           rows=stages$rows,
+                           columns=stages$columns,
+                           MoreArgs = list(cur_method=fun_args$cur_method,
+                                           correlation=correlation,
+                                           correlation_type=fun_args$correlation_type,
+                                           decomposition=decomposition,
                                            data=data,
-                                           nombre_cor=nombre_cor,
-                                           nombres=nombres,
-                                           variancia=var_expl),
+                                           cor_name=cor_name,
+                                           var_names=var_names,
+                                           variance=var_expl),
                            SIMPLIFY = FALSE, .scheduling = "dynamic")
     stopCluster(clp)
-    names(producto) <- paste("k", escenarios$k,
-                             "columnas", argumentos$columnas,
-                             "filas", argumentos$filas, sep="_")
-    producto
+    names(result) <- paste("k", stages$k,
+                             "columns", fun_args$columns,
+                             "rows", fun_args$rows, sep="_")
+    result
   })
 
 
 }
 
-CUR_d2 <- function(data,k=NULL, filas, columnas, metodo, correlacion=NULL,tipo_correlacion,descomposicion,nombre_cor,nombres,variancia,...){
+CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,correlation_type,decomposition,cor_name,var_names,variance,...){
 
-  ###Leverage columnas
-
-  if(k==1){
-    leverage_columnas <- descomposicion$v[, 1]^2 %>% matrix(.,nrow(descomposicion$v),1)
-  }else({
-    leverage_columnas <- descomposicion$v[, 1:k]^2
-  })
-
-  ####### Correlaciones
-
-  if(ncol(correlacion)>0){
-    correlacion <- cbind(data, correlacion)
-    posicion <- which(names(correlacion)==nombre_cor)
-
-    if(tipo_correlacion=="parcial"){
-      correlacion <- pcor(correlacion,...)$estimate[,posicion][-posicion]
-      leverage_columnas_orden <- ((rowSums(leverage_columnas)/k)/(1-correlacion^2))*1000
-    }
-    if(tipo_correlacion=="semiparcial"){
-      correlacion <- spcor(correlacion,...)$estimate[,posicion][-posicion]
-      leverage_columnas_orden <- ((rowSums(leverage_columnas)/k)/(1-correlacion^2))*1000
-    }
-  }else({leverage_columnas_orden <- rowSums(leverage_columnas)/k*1000})
-
-  leverage_columnas_orden <- data.frame(leverage_columnas=leverage_columnas_orden,
-                                        nombres=nombres) %>%
-    arrange(desc(leverage_columnas))
-
-  ###Leverage filas
+  ###Leverage columns
 
   if(k==1){
-    leverage_filas <- descomposicion$u[, 1]^2%>% matrix(.,nrow(descomposicion$u),1)
+    leverage_columns <- decomposition$v[, 1]^2 %>% matrix(.,nrow(decomposition$v),1)
   }else({
-    leverage_filas <- descomposicion$u[, 1:k]^2 #No puse la ponderación
+    leverage_columns <- decomposition$v[, 1:k]^2
+  })
+
+  ####### correlationes
+
+  if(ncol(correlation)>0){
+    correlation <- cbind(data, correlation)
+    position <- which(names(correlation)==cor_name)
+
+    if(correlation_type=="partial"){
+      correlation <- pcor(correlation,...)$estimate[,position][-position]
+      leverage_columns_sorted <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+    }
+    if(correlation_type=="semipartial"){
+      correlation <- spcor(correlation,...)$estimate[,position][-position]
+      leverage_columns_sorted <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+    }
+  }else({leverage_columns_sorted <- rowSums(leverage_columns)/k*1000})
+
+  leverage_columns_sorted <- data.frame(leverage_columns=leverage_columns_sorted,
+                                        var_names=var_names) %>%
+    arrange(desc(leverage_columns))
+
+  ###Leverage rows
+
+  if(k==1){
+    leverage_rows <- decomposition$u[, 1]^2%>% matrix(.,nrow(decomposition$u),1)
+  }else({
+    leverage_rows <- decomposition$u[, 1:k]^2 #No puse la ponderación
   })
 
 
-  leverage_filas_orden <- rowSums(leverage_filas)/k*1000
+  leverage_rows_sorted <- rowSums(leverage_rows)/k*1000
 
-  leverage_filas_orden <- data.frame(leverage_filas=leverage_filas_orden,
-                                     nombres=1:length(leverage_filas_orden)) %>%
-    arrange(desc(leverage_filas))
+  leverage_rows_sorted <- data.frame(leverage_rows=leverage_rows_sorted,
+                                     var_names=1:length(leverage_rows_sorted)) %>%
+    arrange(desc(leverage_rows))
 
   ####Paso de seleccion ####
-  if(metodo=="muestral"){
+  if(cur_method=="sample_cur"){
 
-    leverage_columnas_orden <- leverage_columnas_orden[1:columnas,]
-    index_col <- leverage_columnas_orden$nombres
-    leverage_filas_orden <- leverage_filas_orden[1:filas, ]
-    index_fil <- leverage_filas_orden$nombres
+    leverage_columns_sorted <- leverage_columns_sorted[1:columns,]
+    index_col <- leverage_columns_sorted$var_names
+    leverage_rows_sorted <- leverage_rows_sorted[1:rows, ]
+    index_fil <- leverage_rows_sorted$var_names
 
-    densidad_columnas <- NULL
-    densidad_filas <- NULL
+    density_columns <- NULL
+    density_rows <- NULL
   }
 
-  if(metodo=="mixturas"){
-    #Para columnas
-    densidad_columnas <- densityMclust(leverage_columnas_orden$leverage_columnas)
-    valor_critico_columnas <- quantileMclust(densidad_columnas, p = c(1-columnas))
-    leverage_columnas_orden <- filter(leverage_columnas_orden, leverage_columnas>=valor_critico_columnas)
-    index_col <- leverage_columnas_orden$nombres
+  if(cur_method=="mixturas"){
+    #Para columns
+    density_columns <- densityMclust(leverage_columns_sorted$leverage_columns)
+    critical_value_columns <- quantileMclust(density_columns, p = c(1-columns))
+    leverage_columns_sorted <- filter(leverage_columns_sorted, leverage_columns>=critical_value_columns)
+    index_col <- leverage_columns_sorted$var_names
 
-    ##Para filas
-    densidad_filas <- densityMclust(leverage_filas_orden$leverage_filas)
-    valor_critico_filas <- quantileMclust(densidad_filas, p = c(1-filas))
-    leverage_filas_orden <- filter(leverage_filas_orden, leverage_filas>=valor_critico_filas)
-    index_fil <- leverage_filas_orden$nombres
+    ##Para rows
+    density_rows <- densityMclust(leverage_rows_sorted$leverage_rows)
+    critical_value_rows <- quantileMclust(density_rows, p = c(1-rows))
+    leverage_rows_sorted <- filter(leverage_rows_sorted, leverage_rows>=critical_value_rows)
+    index_fil <- leverage_rows_sorted$var_names
   }
 
   #Cálculo de CUR
 
-  leverage_columnas_orden
+  leverage_columns_sorted
 
   C_cur <- data[,index_col] %>% as.matrix
   R_cur <- data[index_fil, ] %>% as.matrix
@@ -216,23 +216,23 @@ CUR_d2 <- function(data,k=NULL, filas, columnas, metodo, correlacion=NULL,tipo_c
   error_abs <- norm(as.matrix(data)-CUR, type="F")
   error_rel <- error_abs/norm(as.matrix(data), type="F")
 
-  list(#U=descomposicion$u,
-    #D=descomposicion$d,
-    #V=descomposicion$v,
-    #sigma=sigma,
-    #varianza_explicada=variancia,
-    #leverage_columnas=leverage_columnas,
-    #leverage_filas=leverage_filas,
-    #A_hat=A_hat,
-    #C_cur=C_cur,
-    #R_cur=R_cur,
-    #U_cur=U_cur,
-    #CUR=CUR,
-    error_absoluto=error_abs,
-    error_relativo=error_rel#,
-    #leverage_columnas_orden=leverage_columnas_orden,
-    #leverage_filas_orden=leverage_filas_orden#,
-    #densidad_columnas=densidad_columnas,
-    #densidad_filas=densidad_filas
+  list(U=decomposition$u,
+    D=decomposition$d,
+    V=decomposition$v,
+    sigma=sigma,
+    variance_explained=variance,
+    leverage_columns=leverage_columns,
+    leverage_rows=leverage_rows,
+    A_hat=A_hat,
+    C_cur=C_cur,
+    R_cur=R_cur,
+    U_cur=U_cur,
+    CUR=CUR,
+    absolute_error=error_abs,
+    relative_error=error_rel,
+    leverage_columns_sorted=leverage_columns_sorted,
+    leverage_rows_sorted=leverage_rows_sorted,
+    density_columns=density_columns,
+    density_rows=density_rows
   )
 }
