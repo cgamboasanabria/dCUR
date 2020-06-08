@@ -10,7 +10,7 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
   require(stackoverflow)
   require(dplyr)
 
-  fun_args <- match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
+  fun_args <- stackoverflow::match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
 
   test_fun <- sapply(fun_args[c("variables", "correlation")], as.expression) %>% paste()
   correlation <- eval(parse(text = paste("dplyr::select(data,", test_fun[2], ")")))

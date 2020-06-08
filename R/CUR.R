@@ -1,6 +1,6 @@
 CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_method="sample_cur", correlation=NULL,correlation_type=c("partial", "semipartial"),...){
   #Selección de variables
-  fun_args <- match.call.defaults(expand.dots = FALSE) %>% as.list
+  fun_args <- stackoverflow::match.call.defaults(expand.dots = FALSE) %>% as.list
 
   test_fun <- sapply(fun_args[c("variables", "correlation")], as.expression) %>% paste()
   correlation <- eval(parse(text = paste("dplyr::select(data,", test_fun[2], ")")))
