@@ -88,6 +88,8 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
                                        correlation=correlation,
                                        correlation_type=fun_args$correlation_type,
                                        decomposition=decomposition,
+                                       sigma=sigma,
+                                       A_hat=A_hat,
                                        data=data,
                                        cor_name=cor_name,
                                        var_names=var_names,
@@ -118,6 +120,8 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
                                            correlation=correlation,
                                            correlation_type=fun_args$correlation_type,
                                            decomposition=decomposition,
+                                           sigma=sigma,
+                                           A_hat=A_hat,
                                            data=data,
                                            cor_name=cor_name,
                                            var_names=var_names,
@@ -133,7 +137,7 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
 
 }
 
-CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,correlation_type,decomposition,cor_name,var_names,variance,...){
+CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,correlation_type,decomposition,sigma,A_hat,cor_name,var_names,variance,...){
 
   ###Leverage columns
 
