@@ -187,7 +187,7 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
     leverage_columns_sorted <- leverage_columns_sorted[1:columns,]
     index_col <- leverage_columns_sorted$var_names
     leverage_rows_sorted <- leverage_rows_sorted[1:rows, ]
-    index_fil <- leverage_rows_sorted$var_names
+    index_row <- leverage_rows_sorted$var_names
 
     density_columns <- NULL
     density_rows <- NULL
@@ -204,7 +204,7 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
     density_rows <- densityMclust(leverage_rows_sorted$leverage_rows)
     critical_value_rows <- quantileMclust(density_rows, p = c(1-rows))
     leverage_rows_sorted <- filter(leverage_rows_sorted, leverage_rows>=critical_value_rows)
-    index_fil <- leverage_rows_sorted$var_names
+    index_row <- leverage_rows_sorted$var_names
   }
 
   #Cálculo de CUR
@@ -212,7 +212,7 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
   leverage_columns_sorted
 
   C_cur <- data[,index_col] %>% as.matrix
-  R_cur <- data[index_fil, ] %>% as.matrix
+  R_cur <- data[index_row, ] %>% as.matrix
   U_cur <- ginv(C_cur)%*%as.matrix(data)%*%ginv(R_cur)
   CUR <- C_cur%*%U_cur%*%R_cur
 
