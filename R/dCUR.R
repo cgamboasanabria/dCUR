@@ -2,13 +2,14 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
   #######Esta parte es igual al inicio de la función CUR, pero se pone aquí para ahorrar tiempo ejecutándolo una sola vez, la función CUR_d2 es similar a CUR solo que sin la parte de selección de variables.
   #Selección de variables
 
-  require(data.table)
-  require(corpcor)
-  require(MASS)
-  require(mclust)
-  require(ppcor)
-  require(stackoverflow)
-  require(dplyr)
+
+  suppressPackageStartupMessages(require(data.table))
+  suppressPackageStartupMessages(require(corpcor))
+  suppressPackageStartupMessages(require(MASS))
+  suppressPackageStartupMessages(require(mclust))
+  suppressPackageStartupMessages(require(ppcor))
+  suppressPackageStartupMessages(require(stackoverflow))
+  suppressPackageStartupMessages(require(dplyr))
 
   fun_args <- stackoverflow::match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
 
