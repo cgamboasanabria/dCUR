@@ -240,6 +240,6 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
                 density_rows=density_rows
   )
 
-  structure(lista) <- structure(lista, class=c("list", "dCUR"))
+  lista <- structure(lista, class=c("list", "dCUR"))
   lista
 }

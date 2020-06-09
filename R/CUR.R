@@ -112,25 +112,26 @@ CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_m
   error_abs <- norm(as.matrix(data)-CUR, type="F")
   error_rel <- error_abs/norm(as.matrix(data), type="F")
 
-  list(U=decomposition$u,
-    D=decomposition$d,
-    V=decomposition$v,
-    #sigma=sigma,
-    variance_explained=var_expl,
-    leverage_columns=leverage_columns,
-    leverage_rows=leverage_rows,
-    #A_hat=A_hat,
-    C_cur=C_cur,
-    R_cur=R_cur,
-    U_cur=U_cur,
-    CUR=CUR,
-    absolute_error=error_abs,
-    relative_error=error_rel,
-    leverage_columns_sorted=leverage_columns_sorted,
-    leverage_rows_sorted=leverage_rows_sorted,
-    density_columns=density_columns,
-    density_rows=density_rows
+  lista <- list(U=decomposition$u,
+                D=decomposition$d,
+                V=decomposition$v,
+                #sigma=sigma,
+                variance_explained=var_expl,
+                leverage_columns=leverage_columns,
+                leverage_rows=leverage_rows,
+                #A_hat=A_hat,
+                C_cur=C_cur,
+                R_cur=R_cur,
+                U_cur=U_cur,
+                CUR=CUR,
+                absolute_error=error_abs,
+                relative_error=error_rel,
+                leverage_columns_sorted=leverage_columns_sorted,
+                leverage_rows_sorted=leverage_rows_sorted,
+                density_columns=density_columns,
+                density_rows=density_rows
   )
-
+  lista <- structure(lista, class=c("list", "CUR"))
+  lista
 
 }
