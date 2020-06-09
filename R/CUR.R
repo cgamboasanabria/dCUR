@@ -116,6 +116,7 @@ CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_m
                 D=decomposition$d,
                 V=decomposition$v,
                 #sigma=sigma,
+                k=k,
                 variance_explained=var_expl,
                 leverage_columns=leverage_columns,
                 leverage_rows=leverage_rows,
