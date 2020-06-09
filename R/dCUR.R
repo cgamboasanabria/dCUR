@@ -96,6 +96,7 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
     names(result) <- paste("k", stages$k,
                              "columns", fun_args$columns,
                              "rows", fun_args$rows, sep="_")
+    result <- structure(result, class=c("list", "dCUR"))
     result
   }else({
     require(parallel)
@@ -127,6 +128,7 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
     names(result) <- paste("k", stages$k,
                              "columns", fun_args$columns,
                              "rows", fun_args$rows, sep="_")
+    result <- structure(result, class=c("list", "dCUR"))
     result
   })
 
