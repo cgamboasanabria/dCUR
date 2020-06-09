@@ -181,8 +181,8 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
   ####Paso de seleccion ####
   if(cur_method=="sample_cur"){
 
-    columns <- ceiling(columns*nrow(leverage_columns_sorted))
-    rows <- ceiling(rows*nrow(leverage_rows_sorted))
+    #columns <- ceiling(columns*nrow(leverage_columns_sorted))
+    #rows <- ceiling(rows*nrow(leverage_rows_sorted))
 
     leverage_columns_sorted <- leverage_columns_sorted[1:columns,]
     index_col <- leverage_columns_sorted$var_names
