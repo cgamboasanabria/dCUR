@@ -6,7 +6,7 @@ optimal_stage <- function(data){
     do.call(rbind, .) %>%
     mutate(stage=row.names(.))
 
-  plot <- ggplot(datos,aes(x=k, y=error,colour="1")) +
+  plot <- ggplot(data,aes(x=k, y=error,colour="1")) +
     geom_line(colour="blue")  +
     labs(title = "RELATIVE ERROR ESTIMATION",
          x = "K",
