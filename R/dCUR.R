@@ -155,15 +155,15 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
 
     if(correlation_type=="partial"){
       correlation <- pcor(correlation,...)$estimate[,position][-position]
-      leverage_columns_sorted <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+      leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
     }
     if(correlation_type=="semipartial"){
       correlation <- spcor(correlation,...)$estimate[,position][-position]
-      leverage_columns_sorted <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+      leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
     }
-  }else({leverage_columns_sorted <- rowSums(leverage_columns)/k*1000})
+  }else({leverage_columns <- rowSums(leverage_columns)/k*1000})
 
-  leverage_columns_sorted <- data.frame(leverage_columns=leverage_columns_sorted,
+  leverage_columns_sorted <- data.frame(leverage_columns=leverage_columns,
                                         var_names=var_names) %>%
     arrange(desc(leverage_columns))
 
@@ -176,10 +176,10 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
   })
 
 
-  leverage_rows_sorted <- rowSums(leverage_rows)/k*1000
+  leverage_rows <- rowSums(leverage_rows)/k*1000
 
-  leverage_rows_sorted <- data.frame(leverage_rows=leverage_rows_sorted,
-                                     var_names=1:length(leverage_rows_sorted)) %>%
+  leverage_rows_sorted <- data.frame(leverage_rows=leverage_rows,
+                                     var_names=1:length(leverage_rows)) %>%
     arrange(desc(leverage_rows))
 
   ####Paso de seleccion ####
@@ -199,12 +199,14 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
 
   if(cur_method=="mixturas"){
     #Para columns
+    columns <- ifelse(columns==1, .99999999, columns)
     density_columns <- densityMclust(leverage_columns_sorted$leverage_columns)
     critical_value_columns <- quantileMclust(density_columns, p = c(1-columns))
     leverage_columns_sorted <- filter(leverage_columns_sorted, leverage_columns>=critical_value_columns)
     index_col <- leverage_columns_sorted$var_names
 
     ##Para rows
+    rows <- ifelse(rows==1, .99999999, rows)
     density_rows <- densityMclust(leverage_rows_sorted$leverage_rows)
     critical_value_rows <- quantileMclust(density_rows, p = c(1-rows))
     leverage_rows_sorted <- filter(leverage_rows_sorted, leverage_rows>=critical_value_rows)

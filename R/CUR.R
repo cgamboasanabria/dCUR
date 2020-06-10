@@ -90,12 +90,14 @@ CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_m
 
   if(cur_method=="mixturas"){
     #Para columns
+    columns <- ifelse(columns==1, .99999999, columns)
     density_columns <- densityMclust(leverage_columns_sorted$leverage_columns)
     critical_value_columns <- quantileMclust(density_columns, p = c(1-columns))
     leverage_columns_sorted <- filter(leverage_columns_sorted, leverage_columns>=critical_value_columns)
     index_col <- leverage_columns_sorted$var_names
 
     ##Para rows
+    rows <- ifelse(rows==1, .99999999, rows)
     density_rows <- densityMclust(leverage_rows_sorted$leverage_rows)
     critical_value_rows <- quantileMclust(density_rows, p = c(1-rows))
     leverage_rows_sorted <- filter(leverage_rows_sorted, leverage_rows>=critical_value_rows)
