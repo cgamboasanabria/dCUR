@@ -47,15 +47,15 @@ CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_m
 
     if(correlation_type=="partial"){
       correlation <- pcor(correlation,...)$estimate[,position][-position]
-      leverage_columns_sorted <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+      leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
     }
     if(correlation_type=="semipartial"){
       correlation <- spcor(correlation,...)$estimate[,position][-position]
-      leverage_columns_sorted <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+      leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
     }
-  }else({leverage_columns_sorted <- rowSums(leverage_columns)/k*1000})
+  }else({leverage_columns <- rowSums(leverage_columns)/k*1000})
 
-  leverage_columns_sorted <- data.frame(leverage_columns=leverage_columns_sorted,
+  leverage_columns_sorted <- data.frame(leverage_columns=leverage_columns,
                                         var_names=var_names) %>%
     arrange(desc(leverage_columns))
 
@@ -68,10 +68,10 @@ CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_m
   })
 
 
-  leverage_rows_sorted <- rowSums(leverage_rows)/k*1000
+  leverage_rows <- rowSums(leverage_rows)/k*1000
 
-  leverage_rows_sorted <- data.frame(leverage_rows=leverage_rows_sorted,
-                                     var_names=1:length(leverage_rows_sorted)) %>%
+  leverage_rows_sorted <- data.frame(leverage_rows=leverage_rows,
+                                     var_names=1:length(leverage_rows)) %>%
     arrange(desc(leverage_rows))
 
   ####Selection####
