@@ -231,19 +231,19 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
                 #sigma=sigma2,
                 k=k,
                 #variance_explained=variance,
-                leverage_columns=leverage_columns,
-                leverage_rows=leverage_rows,
+                #leverage_columns=leverage_columns,
+                #leverage_rows=leverage_rows,
                 #A_hat=A_hat2,
                 #C_cur=C_cur,
                 #R_cur=R_cur,
                 #U_cur=U_cur,
-                CUR=CUR,
+                #CUR=CUR,
                 absolute_error=error_abs,
-                relative_error=error_rel,
-                leverage_columns_sorted=leverage_columns_sorted,
-                leverage_rows_sorted=leverage_rows_sorted,
-                density_columns=density_columns,
-                density_rows=density_rows
+                relative_error=error_rel#,
+                #leverage_columns_sorted=leverage_columns_sorted,
+                #leverage_rows_sorted=leverage_rows_sorted,
+                #density_columns=density_columns,
+                #density_rows=density_rows
   )
 
   lista <- structure(lista, class=c("list", "dCUR"))
