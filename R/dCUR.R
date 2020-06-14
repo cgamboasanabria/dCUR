@@ -217,7 +217,7 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
 
   #leverage_columns_sorted
 
-  C_cur <- data[,index_col] %>% as.matrix
+  C_cur <- data[,as.character(index_col)] %>% as.matrix
   R_cur <- data[index_row, ] %>% as.matrix
   U_cur <- ginv(C_cur)%*%as.matrix(data)%*%ginv(R_cur)
   CUR <- C_cur%*%U_cur%*%R_cur
