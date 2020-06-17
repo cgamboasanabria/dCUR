@@ -2,24 +2,34 @@
 \alias{var_exp}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Titulo
+Variabilidad explicada
 }
 \description{
-descripcion
+Esta función calcula la varianza explicada para cada uno de los componentes según el método de descomposición valores singulares (SVD).
 }
 \usage{
-var_exp(x)
+var_exp(data, standardize = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-     ~~Describe \code{x} here~~
-}
+  \item{data}{
+    corresponde al set de datos.} 
+
+  \item{standardize}{
+     standardize logical.Si \code{TRUE} los datos se estandarizan}
+
 }
 \details{
+
+
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
+ var_exp retorna un data frame indicando para cada componente el porcentaje de variabilidad explicada.
+
+\item{residuals }{fldkfkdgk}
+\item{rank }{dsfsfs}
+    
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
@@ -27,6 +37,8 @@ var_exp(x)
 %% ...
 }
 \references{
+
+
 %% ~put references to the literature/web site here ~
 }
 \author{
