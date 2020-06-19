@@ -1,7 +1,7 @@
 optimal_stage <- function(data){
 
   data <- lapply(data, function(x){
-    data.frame(k=x$k, error=x$relative_error)
+    data.frame(k=x$k, columns=x$columns, rows=x$rows, error=x$relative_error)
   }) %>%
     do.call(rbind, .) %>%
     mutate(stage=row.names(.))
