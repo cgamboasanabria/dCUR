@@ -13,14 +13,14 @@ optimal_stage <- function(data){
 
   plot <- data %>%
     ggplot()+
-    geom_raster(data = datos, aes(x=k, y=columns, fill=error), interpolate = TRUE)+
+    geom_raster(data = data, aes(x=k, y=columns, fill=error), interpolate = TRUE)+
     scale_y_continuous(expand = c(0,0),
                        sec.axis = dup_axis(name = "Rows",
-                                           labels = levels(as.factor(datos$rows))),
-                       labels = levels(as.factor(datos$columns)))+
-    scale_x_discrete(expand = c(0,0), limits = c(min(datos$k),
-                                                 floor(quantile(datos$k, probs = seq(.1,.9,.1))),
-                                                 max(datos$k)))+
+                                           labels = levels(as.factor(data$rows))),
+                       labels = levels(as.factor(data$columns)))+
+    scale_x_discrete(expand = c(0,0), limits = c(min(data$k),
+                                                 floor(quantile(data$k, probs = seq(.1,.9,.1))),
+                                                 max(data$k)))+
     scale_fill_viridis(option="B")+
     theme_bw()+
     labs(y="Columns", x="K", fill="Relative error", title="", caption="")+
