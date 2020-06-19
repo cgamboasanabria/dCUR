@@ -135,8 +135,8 @@ dCUR <- function(data, variables, standardize=FALSE,
                            SIMPLIFY = FALSE, .scheduling = "dynamic")
     stopCluster(clp)
     names(result) <- paste("k", stages$k,
-                             "columns", stages$columns,
-                             "rows", stages$rows, sep="_")
+                           "columns", round(stages$columns/ncol(data), 2),
+                           "rows", round(stages$rows/nrow(data), 2), sep="_")
     result <- structure(result, class=c("list", "dCUR"))
     result
   })
