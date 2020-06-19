@@ -1,4 +1,6 @@
-dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dynamic_rows=FALSE, parallelize=FALSE,...){
+dCUR <- function(data, variables, standardize=FALSE,
+                 dynamic_columns=FALSE, dynamic_rows=FALSE, parallelize=FALSE,
+                 skip=0.05,...){
   #######Esta parte es igual al inicio de la función CUR, pero se pone aquí para ahorrar tiempo ejecutándolo una sola vez, la función CUR_d2 es similar a CUR solo que sin la parte de selección de variables.
   #Selección de variables
 
@@ -51,20 +53,20 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
   #Se definen los stages
 
   stages <-if(fun_args$cur_method=="sample_cur"){
-    columns <- ncol(data)*fun_args$columns
-    rows <- nrow(data)*fun_args$rows
+    columns <- fun_args$columns
+    rows <- fun_args$rows
 
     if(dynamic_columns){
       if(dynamic_rows){
-        expand.grid(k=1:k, columns=1:columns, rows=1:rows) %>%
+        expand.grid(k=1:k, columns=seq(.01,columns,skip), rows=seq(.01,rows,skip)) %>%
           arrange(k, columns, rows)
       }else({
-        expand.grid(k=1:k, columns=1:columns, rows=rows) %>%
+        expand.grid(k=1:k, columns=seq(.01,columns,skip), rows=rows) %>%
           arrange(k, columns, rows)
       })
     }else({
       if(dynamic_rows){
-        expand.grid(k=1:k, columns=columns, rows=1:rows) %>%
+        expand.grid(k=1:k, columns=columns, rows=seq(.01,rows,skip)) %>%
           arrange(k, columns, rows)
       }else({
         expand.grid(k=1:k, columns=columns, rows=rows) %>%
@@ -77,6 +79,12 @@ dCUR <- function(data, variables, standardize=FALSE, dynamic_columns=FALSE, dyna
     expand.grid(k=1:k, rows=rows, columns=columns) %>%
       arrange(k, columns, rows)
   })
+
+  stages <- if(fun_args$cur_method=="sample_cur"){
+    stages %>%
+      mutate(columns=ceiling(ncol(data)*columns),
+             rows=ceiling(nrow(data)*rows))
+  }else{stages}
 
 
   if(!parallelize){
