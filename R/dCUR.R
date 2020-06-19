@@ -238,6 +238,8 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
                 #V=decomposition$v,
                 #sigma=sigma2,
                 k=k,
+                columns=columns,
+                rows=rows,
                 #variance_explained=variance,
                 #leverage_columns=leverage_columns,
                 #leverage_rows=leverage_rows,
