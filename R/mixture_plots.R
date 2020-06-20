@@ -1,12 +1,3 @@
-mixture_plots <- function(data){
-  if(class(data)[2] == "dCUR"){
-
-    lapply(data, function(x){
-      suppressWarnings(mixture_plots_fun(x) )
-    })
-  }else(suppressWarnings(mixture_plots_fun(data)))
-}
-
 mixture_plots_fun <- function(data){
   #BIC plot
 
@@ -31,13 +22,13 @@ mixture_plots_fun <- function(data){
 
   #dataity plot
 
-  df <- data.frame(leverage_columns = leverage_columns)
+  df <- data.frame(leverage_columns = leverage_columns, densityMixture=densityMclust(leverage_columns)$density)
 
   p2 <- ggplot(df, aes(x=leverage_columns)) +
     geom_histogram(aes(y=..density..),
                    binwidth=.5,
                    colour="black", fill="white") +
-    geom_density(alpha=.2, fill="#73108f") +
+    geom_line(data=df,aes(x = leverage_columns, y = densityMixture), col = "#73108f") +
     theme_classic()
 
   #Cumulative distribution
