@@ -1,4 +1,4 @@
-optimal_stage <- function(data){
+optimal_stage <- function(data, limit=80){
 
   data <- lapply(data, function(x){
     data.frame(k=x$k, columns=x$columns, rows=x$rows, error=x$relative_error)
@@ -16,7 +16,7 @@ optimal_stage <- function(data){
     filter(!is.na(rate2)) %>%
     mutate(rate2=rate2/sum(rate2)*100,
            rate2=cumsum(rate2)) %>%
-    filter(rate2>=80)
+    filter(rate2>=limit)
 
   best_columns <- best_columns[1,1]
 
@@ -29,7 +29,7 @@ optimal_stage <- function(data){
     filter(!is.na(rate2)) %>%
     mutate(rate2=rate2/sum(rate2)*100,
            rate2=cumsum(rate2)) %>%
-    filter(rate2>=80)
+    filter(rate2>=limit)
 
   best_rows <- best_rows[1,1]
 

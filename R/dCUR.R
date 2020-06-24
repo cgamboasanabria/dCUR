@@ -1,9 +1,6 @@
 dCUR <- function(data, variables, standardize=FALSE,
                  dynamic_columns=FALSE, dynamic_rows=FALSE, parallelize=FALSE,
                  skip=0.05,...){
-  #######Esta parte es igual al inicio de la función CUR, pero se pone aquí para ahorrar tiempo ejecutándolo una sola vez, la función CUR_d2 es similar a CUR solo que sin la parte de selección de variables.
-  #Selección de variables
-
 
   suppressPackageStartupMessages(require(data.table))
   suppressPackageStartupMessages(require(corpcor))
@@ -25,21 +22,21 @@ dCUR <- function(data, variables, standardize=FALSE,
     data <- scale(data)
   }
 
-  #Descomposición
+
   decomposition <- svd(data)
   sigma <- t(decomposition$u)%*%as.matrix(data)%*%decomposition$v
   A_hat <- decomposition$u%*%sigma%*%t(decomposition$v) %>% as.data.frame()
   names(A_hat) <- var_names
 
-  #variance explicada
+
   var_expl <- cumsum(diag(sigma)/sum(diag(sigma)))*100
 
-  #Se define el valor de k para hacerlo dinámico
+
   k <- if(!("k"%in%names(fun_args))){
     ncol(data)-1
   }else(fun_args$k)
 
-  #Puntaje leverage
+
 
   k <- if(is.null(k)){
     min(which((var_expl>=80) == TRUE))
@@ -49,8 +46,6 @@ dCUR <- function(data, variables, standardize=FALSE,
     }else(k)
   }
 
-  #######################################Proceso dinámico######################################
-  #Se definen los stages
 
   stages <-if(fun_args$cur_method=="sample_cur"){
     columns <- fun_args$columns
@@ -88,7 +83,7 @@ dCUR <- function(data, variables, standardize=FALSE,
 
 
   if(!parallelize){
-    ##SECUENCIAL###
+
     result <- mapply(CUR_d2,
                        k=stages$k,
                        rows=stages$rows,
@@ -119,7 +114,7 @@ dCUR <- function(data, variables, standardize=FALSE,
       require(stackoverflow)
       require(dplyr)
     })
-    #parallelize
+
     result <- clusterMap(cl=clp, fun = CUR_d2,
                            k=stages$k,
                            rows=stages$rows,
@@ -147,7 +142,7 @@ dCUR <- function(data, variables, standardize=FALSE,
 CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,correlation_type,decomposition,cor_name,var_names,variance,...){
 
 
-  ###Leverage columns
+
 
   if(k==1){
     leverage_columns <- decomposition$v[, 1]^2 %>% matrix(.,nrow(decomposition$v),1)
@@ -155,7 +150,7 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
     leverage_columns <- decomposition$v[, 1:k]^2
   })
 
-  ####### correlationes
+
 
   if(ncol(correlation)>0){
     correlation <- cbind(data, correlation)
@@ -175,12 +170,12 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
                                         var_names=var_names) %>%
     arrange(desc(leverage_columns))
 
-  ###Leverage rows
+
 
   if(k==1){
     leverage_rows <- decomposition$u[, 1]^2%>% matrix(.,nrow(decomposition$u),1)
   }else({
-    leverage_rows <- decomposition$u[, 1:k]^2 #No puse la ponderación
+    leverage_rows <- decomposition$u[, 1:k]^2
   })
 
 
@@ -190,11 +185,10 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
                                      var_names=1:length(leverage_rows)) %>%
     arrange(desc(leverage_rows))
 
-  ####Paso de seleccion ####
+
   if(cur_method=="sample_cur"){
 
-    #columns <- ceiling(columns*nrow(leverage_columns_sorted))
-    #rows <- ceiling(rows*nrow(leverage_rows_sorted))
+
 
     leverage_columns_sorted <- leverage_columns_sorted[1:columns,]
     index_col <- leverage_columns_sorted$var_names
@@ -205,25 +199,21 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
     density_rows <- NULL
   }
 
-  if(cur_method=="mixturas"){
-    #Para columns
+  if(cur_method=="mixture"){
+
     columns <- ifelse(columns==1, .99999999, columns)
     density_columns <- densityMclust(leverage_columns_sorted$leverage_columns)
     critical_value_columns <- quantileMclust(density_columns, p = c(1-columns))
     leverage_columns_sorted <- filter(leverage_columns_sorted, leverage_columns>=critical_value_columns)
     index_col <- leverage_columns_sorted$var_names
 
-    ##Para rows
+
     rows <- ifelse(rows==1, .99999999, rows)
     density_rows <- densityMclust(leverage_rows_sorted$leverage_rows)
     critical_value_rows <- quantileMclust(density_rows, p = c(1-rows))
     leverage_rows_sorted <- filter(leverage_rows_sorted, leverage_rows>=critical_value_rows)
     index_row <- leverage_rows_sorted$var_names
   }
-
-  #Cálculo de CUR
-
-  #leverage_columns_sorted
 
   C_cur <- data[,as.character(index_col)] %>% as.matrix
   R_cur <- data[index_row, ] %>% as.matrix
@@ -233,28 +223,10 @@ CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,corr
   error_abs <- norm(as.matrix(data)-CUR, type="F")
   error_rel <- error_abs/norm(as.matrix(data), type="F")
 
-  lista <- list(#U=decomposition$u,
-                #D=decomposition$d,
-                #V=decomposition$v,
-                #sigma=sigma2,
-                k=k,
+  lista <- list(k=k,
                 columns=columns,
                 rows=rows,
-                #variance_explained=variance,
-                #leverage_columns=leverage_columns,
-                #leverage_rows=leverage_rows,
-                #A_hat=A_hat2,
-                #C_cur=C_cur,
-                #R_cur=R_cur,
-                #U_cur=U_cur,
-                #CUR=CUR,
-                absolute_error=error_abs,
-                relative_error=error_rel#,
-                #leverage_columns_sorted=leverage_columns_sorted,
-                #leverage_rows_sorted=leverage_rows_sorted,
-                #density_columns=density_columns,
-                #density_rows=density_rows
-  )
+                relative_error=error_rel)
 
   lista <- structure(lista, class=c("list", "dCUR"))
   lista

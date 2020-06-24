@@ -1,5 +1,4 @@
 mixture_plots_fun <- function(data){
-  #BIC plot
 
   leverage_columns <- data$leverage_columns
   data <- data$density_columns
@@ -20,7 +19,6 @@ mixture_plots_fun <- function(data){
     theme_classic()+
     scale_x_continuous(breaks = seq(min(df$components),max(df$components)))
 
-  #dataity plot
 
   df <- data.frame(leverage_columns = leverage_columns, densityMixture=densityMclust(leverage_columns)$density)
 
@@ -31,7 +29,6 @@ mixture_plots_fun <- function(data){
     geom_line(data=df,aes(x = leverage_columns, y = densityMixture), col = "#73108f") +
     theme_classic()
 
-  #Cumulative distribution
 
   df <- cdfMclust(data) %>%
     data.frame() %>%
@@ -40,8 +37,6 @@ mixture_plots_fun <- function(data){
   p3 <- ggplot(df, aes(`Leverage`,`Cumulative density function`)) +
     geom_line()+
     theme_classic()
-
-  #Qqplot
 
   data_data <- as.numeric(data$data) %>% sort()
   n <- length(data_data)
