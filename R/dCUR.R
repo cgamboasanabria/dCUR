@@ -53,15 +53,21 @@ dCUR <- function(data, variables, standardize=FALSE,
 
     if(dynamic_columns){
       if(dynamic_rows){
-        expand.grid(k=1:k, columns=seq(.01,columns,skip), rows=seq(.01,rows,skip)) %>%
+        expand.grid(k=1:k,
+                    columns=unique(c(seq(.01,columns,skip), columns)),
+                    rows=unique(c(seq(.01,rows,skip), rows))) %>%
           arrange(k, columns, rows)
       }else({
-        expand.grid(k=1:k, columns=seq(.01,columns,skip), rows=rows) %>%
+        expand.grid(k=1:k,
+                    columns=unique(c(seq(.01,columns,skip), columns)),
+                    rows=rows) %>%
           arrange(k, columns, rows)
       })
     }else({
       if(dynamic_rows){
-        expand.grid(k=1:k, columns=columns, rows=seq(.01,rows,skip)) %>%
+        expand.grid(k=1:k,
+                    columns=columns,
+                    rows=unique(c(seq(.01,rows,skip), rows))) %>%
           arrange(k, columns, rows)
       }else({
         expand.grid(k=1:k, columns=columns, rows=rows) %>%
