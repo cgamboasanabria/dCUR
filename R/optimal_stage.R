@@ -7,7 +7,7 @@ optimal_stage <- function(data, limit=80){
     mutate(stage=row.names(.)) %>%
     arrange(error, desc(k), desc(columns), desc(rows))
 
-  best_columns <- datos %>%
+  best_columns <- data %>%
     group_by(columns) %>%
     summarise(error=mean(error)) %>%
     mutate(rate=lag(error),
@@ -20,7 +20,7 @@ optimal_stage <- function(data, limit=80){
 
   best_columns <- best_columns[1,1]
 
-  best_rows <- datos %>%
+  best_rows <- data %>%
     group_by(rows) %>%
     summarise(error=mean(error)) %>%
     mutate(rate=lag(error),
@@ -33,7 +33,7 @@ optimal_stage <- function(data, limit=80){
 
   best_rows <- best_rows[1,1]
 
-  best_k <- datos %>%
+  best_k <- data %>%
     filter(columns==best_columns$columns & rows==best_rows$rows) %>%
     group_by(k) %>%
     summarise(error=mean(error)) %>%
@@ -41,7 +41,7 @@ optimal_stage <- function(data, limit=80){
 
   best_k <- best_k[1,1]
 
-  columns_plot <- datos %>%
+  columns_plot <- data %>%
     group_by(columns) %>%
     summarise(error=mean(error)) %>%
     ggplot(., aes(x=columns, y=error))+
@@ -53,7 +53,7 @@ optimal_stage <- function(data, limit=80){
     geom_text(mapping = aes(label = paste("columns=", best_columns$columns),
                             x = best_columns$columns, y=median(error)), angle = 60, hjust = 0)
 
-  rows_plot <- datos %>%
+  rows_plot <- data %>%
     group_by(rows) %>%
     summarise(error=mean(error)) %>%
     ggplot(., aes(x=rows, y=error))+
@@ -65,7 +65,7 @@ optimal_stage <- function(data, limit=80){
     geom_text(mapping = aes(label = paste("rows=", best_rows$rows),
                             x = best_rows$rows, y=median(error)), angle = 60, hjust = 0)
 
-  k_plot <- datos %>%
+  k_plot <- data %>%
     filter(columns==best_columns$columns & rows==best_rows$rows) %>%
     group_by(k) %>%
     summarise(error=mean(error)) %>%
