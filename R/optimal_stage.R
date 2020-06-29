@@ -7,7 +7,7 @@ optimal_stage <- function(data, limit=80){
     mutate(stage=row.names(.)) %>%
     arrange(error, desc(k), desc(columns), desc(rows))
 
-  if(unique(data$columns)>=2){
+  if(length(unique(data$columns))>=2){
     best_columns <- data %>%
       group_by(columns) %>%
       summarise(error=mean(error)) %>%
@@ -39,7 +39,7 @@ optimal_stage <- function(data, limit=80){
   })
 
 
-  if(unique(data$rows)>=2){
+  if(length(unique(data$rows))>=2){
     best_rows <- data %>%
       group_by(rows) %>%
       summarise(error=mean(error)) %>%
