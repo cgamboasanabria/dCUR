@@ -1,5 +1,5 @@
-import(dplyr)
 import(parallel)
+importFrom(magrittr, "%>%")
 importFrom(mclust,densityMclust)
 importFrom(mclust,quantileMclust)
 importFrom(dplyr,select)
