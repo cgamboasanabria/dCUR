@@ -2,14 +2,6 @@ dCUR <- function(data, variables, standardize=FALSE,
                  dynamic_columns=FALSE, dynamic_rows=FALSE, parallelize=FALSE,
                  skip=0.05,...){
 
-  suppressPackageStartupMessages(require(data.table))
-  suppressPackageStartupMessages(require(corpcor))
-  suppressPackageStartupMessages(require(MASS))
-  suppressPackageStartupMessages(require(mclust))
-  suppressPackageStartupMessages(require(ppcor))
-  suppressPackageStartupMessages(require(stackoverflow))
-  suppressPackageStartupMessages(require(dplyr))
-
   fun_args <- stackoverflow::match.call.defaults(expand.dots = TRUE)[-1] %>% as.list
 
   test_fun <- sapply(fun_args[c("variables", "correlation")], as.expression) %>% paste()
@@ -109,7 +101,7 @@ dCUR <- function(data, variables, standardize=FALSE,
     result <- structure(result, class=c("list", "dCUR"))
     result
   }else({
-    require(parallel)
+
     clp <- makeCluster(detectCores(logical = FALSE), type = "SOCK", useXDR=FALSE)
     clusterEvalQ(clp, {
       require(data.table)
