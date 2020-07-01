@@ -1,4 +1,4 @@
-mixture_plots_fun <- function(data){
+mixture_plots <- function(data){
 
   leverage_columns <- data$leverage_columns
   data <- data$density_columns
