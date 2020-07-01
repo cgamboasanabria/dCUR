@@ -1,3 +1,4 @@
+exportPattern("^[[:alpha:]]+")
 import(parallel)
 importFrom(magrittr, "%>%")
 importFrom(mclust,densityMclust)
