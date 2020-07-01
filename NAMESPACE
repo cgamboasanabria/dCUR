@@ -1,5 +1,6 @@
 exportPattern("^[[:alpha:]]+")
 import(parallel)
+import(ggplot2)
 importFrom(magrittr, "%>%")
 importFrom(stackoverflow,match.call.defaults)
 importFrom(mclust,densityMclust)
