@@ -222,7 +222,7 @@ A brief description
 %%  ~~ If necessary, more details than the __description__ above ~~
 }
 \source{
-\href{https://github.com/cgamboasanabria/dCUR/doc/AASP_description_data.xlsx}
+https://github.com/cgamboasanabria/dCUR/doc/AASP_description_data.xlsx
 }
 \references{
 %%  ~~ possibly secondary sources and usages ~~
