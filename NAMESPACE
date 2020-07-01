@@ -35,5 +35,3 @@ importFrom(ggplot2,geom_density)
 importFrom(ggplot2,theme_bw)
 importFrom(ggplot2,geom_bar)
 importFrom(ggplot2,coord_flip)
-
-
