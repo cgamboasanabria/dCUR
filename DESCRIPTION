@@ -6,6 +6,15 @@ Author: Who wrote it
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
+Imports:
+    parallel,
+    magrittr,
+    stackoverflow,
+    mclust,
+    MASS,
+    ppcor,
+    ggplot2,
+    dplyr
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
