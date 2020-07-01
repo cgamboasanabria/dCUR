@@ -1,4 +1,4 @@
-export("%>%")
+importFrom(dplyr, %>%)
 import(parallel)
 importFrom(mclust,densityMclust)
 importFrom(mclust,quantileMclust)
