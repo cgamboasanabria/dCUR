@@ -2,6 +2,8 @@ Package: dCUR
 Type: Package
 Title: Dimension reduction with Dynamic CUR
 Version: 0.1.0
+Depends:
+    R (>= 3.5.0)
 Author@R: c(
     person("César", "Gamboa", email="info@cesargamboasanabria.com", role=c("cre", "aut", "cph"), comment=c(ORCID = "0000-0001-6733-4759")),
     person("Stefani", "Matarrita", email="stefmatarrita@gmail.com", role="aut", comment=c(ORCID = "0000-0002-1222-1981")),
