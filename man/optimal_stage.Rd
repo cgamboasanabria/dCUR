@@ -21,11 +21,11 @@ The objective of CUR decomposition is to find the most relevant variables and ob
 
 }
 \value{
-\item{data} {a data frame which specifies the relative error for each stage of CUR descomposition.}
-\item{rows_plot} {a plot where the average relative error is showed for each number of relevant rows selected.}
+\item{data}{a data frame which specifies the relative error for each stage of CUR descomposition.}
+\item{rows_plot}{a plot where the average relative error is showed for each number of relevant rows selected.}
 \item{columns_plot}{a plot where the average relative error is showed for each number of relevant columns selected.}
-\item{k_plot} {a plot where the average relative error is showed for each k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
-\item{optimal} {a data frame where the average relative error is showed for optimal k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
+\item{k_plot}{a plot where the average relative error is showed for each k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
+\item{optimal}{a data frame where the average relative error is showed for optimal k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
 }
 \references{
 Villegas, G., Martin, C., Garcia-Gonzalez, N., Hernandez, S., Sanchez-Barba, M., & Galindo-Villardin, M. P. (2019). Dynamic CUR, an alternative to variable selectin in CUR decomposition. Revista Investigacion Operacional, 40(3), 391-399. Retrieved from https://rev-inv-ope.univ-paris1.fr/fileadmin/rev-inv-ope/files/40319/40319-09.pdf
@@ -35,7 +35,7 @@ M.Sc. Cesar Gamboa Sanabria, info@cesargamboasanabria.com, https://orcid.org/000
 M.Sc. Katherine Barquero Mejias, kath30.bm@gmail.com, https://orcid.org/0000-0003-1760-9026; Ph.D. Greibin Villegas Barahona,gvillegas@uned.ac.cr, https://orcid.org/0000-0002-4380-0812;
 Ph.D. Mercedes Sanchez Barba,mersanbar@usal.es, https://orcid.org/000-0002-3324-5798;
 Ph.D. Maria Purificacion Galindo Villard?n, pgalindo@usal.es, https://orcid.org/0000-0001-6977-7545}
-}
+
 
 
 \seealso{
@@ -55,7 +55,5 @@ result
 result$k_plot
 result$columns_plot
 result$data
-result$optima
-
-\keyword{ ~multivariate}
+result$optima}
 
