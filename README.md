@@ -25,11 +25,14 @@ remotes::install_github("cgamboasanabria/dCUR")
 
 ## var_exp
 
+It is the ratio between the variance of that principal component and the total variance with CUR technique proposal by Mahoney & Drineas (2009).
+
 ````
 var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
 ````
 ## CUR
 
+This function calculates the traditional leverage scores according to the proposal of Mahoney & Drineas (2009). The top.score method of Mahoney and Drineas is called sample CUR. The extension to Mahoney's standard procedure corresponds to the reconfiguration of the leverage scores according to the methodology of Villegas et al. (2018).
 
 ````
 CUR(data=AASP, variables=hoessem:notabachillerato,
@@ -51,6 +54,8 @@ CUR(data=AASP, variables=hoessem:notabachillerato,
 
 ## relevant_variables_plot
 
+Returns a bar graph with the higher leverages values fitted with the CUR function according to the selected columns in a matrix data.
+
 ````
 results <- CUR(data=AASP, variables=hoessem:notabachillerato,
                k=20, rows = 1, columns = .2, standardize = TRUE,
@@ -60,6 +65,8 @@ relevant_variables_plot(results)
 
 ## mixture_plots
 
+Returns the results of fit the empirical distribution of the leverage scores obtained with the CUR function to a probability distribution estimated by means of Gaussian mixture models for each of the k components with which the leverage scores can be calculated, choosing columns and rows in which that probability accumulates.
+
 ````
 results <- CUR(data=AASP, variables=hoessem:notabachillerato,
                k=20, rows = .9999999, columns = .10, standardize = TRUE,
@@ -68,6 +75,8 @@ mixture_plots(results)
 ````
 
 ## dCUR
+
+Dynamic CUR is a function that boosts the CUR descomposition varying the k, number of columns, and rows used, its final purposes is help to find the stage which minimizes the relative error.
 
 ````
 dCUR(data=AASP, variables=hoessem:notabachillerato,
@@ -79,6 +88,8 @@ dCUR(data=AASP, variables=hoessem:notabachillerato,
 ````
 
 ## optimal_stage
+
+Used to select the optimal k, the number of columns and rows of dynamic CUR object, it also produces a data frame and corresponding plots.
 
 ````
 results <- dCUR(data=AASP, variables=hoessem:notabachillerato,
