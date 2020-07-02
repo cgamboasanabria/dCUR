@@ -1,9 +1,14 @@
 Package: dCUR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Dimension reduction with Dynamic CUR
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author@R: c(
+    person("César", "Gamboa", email="info@cesargamboasanabria.com", role=c("cre", "aut", "cph"), comment=c(ORCID = "0000-0001-6733-4759")),
+    person("Stefani", "Matarrita", email="stefmatarrita@gmail.com", role="aut", comment=c(ORCID = "0000-0002-1222-1981")),
+    person("Katherine", "Barquero", email="kath30.bm@gmail.com", role="aut", comment=c(ORCID = "0000-0003-1760-9026")),
+    person("Greibin", "Villegas", email="greibin_villegas@hotmail.com", role="ctb", comment=c(ORCID = "0000-0002-4380-0812"))
+    )
+Maintainer: César Gamboa Sanabria <info@cesargamboasanabria.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 Imports:
@@ -15,6 +20,6 @@ Imports:
     ppcor,
     ggplot2,
     dplyr
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
