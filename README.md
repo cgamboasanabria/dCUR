@@ -6,6 +6,8 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/cgamboasanabria/dCUR)
 ![GitHub issues](https://img.shields.io/github/issues/cgamboasanabria/dCUR)
 ![GitHub last commit](https://img.shields.io/github/last-commit/cgamboasanabria/dCUR)
+![Maintenance](https://img.shields.io/maintenance/yes/2020)
+[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 The CUR theoretical basis comes from the SVD of the matrix of interest to make a new factorization by selecting columns and rows from the original matrix. It is a low-rank approximation to the original matrix expressed in a small number of rows and columns, which are easier to interpret than the singular vectors of the SVD. The main advantage of CUR Decomposition over SVD is that the original data matrix can express a reduced number of rows and columns instead of obtaining factorial axes resulting from a linear combination of all the original variables.
 
