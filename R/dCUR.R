@@ -80,6 +80,99 @@ dCUR <- function(data, variables, standardize=FALSE,
   }else{stages}
 
 
+  CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,correlation_type,decomposition,cor_name,var_names,variance,...){
+
+
+
+
+    if(k==1){
+      leverage_columns <- decomposition$v[, 1]^2 %>% matrix(.,nrow(decomposition$v),1)
+    }else({
+      leverage_columns <- decomposition$v[, 1:k]^2
+    })
+
+
+
+    if(ncol(correlation)>0){
+      correlation <- cbind(data, correlation)
+      position <- which(names(correlation)==cor_name)
+
+      if(correlation_type=="partial"){
+        correlation <- pcor(correlation,...)$estimate[,position][-position]
+        leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+      }
+      if(correlation_type=="semipartial"){
+        correlation <- spcor(correlation,...)$estimate[,position][-position]
+        leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
+      }
+    }else({leverage_columns <- rowSums(leverage_columns)/k*1000})
+
+    leverage_columns_sorted <- data.frame(leverage_columns=leverage_columns,
+                                          var_names=var_names) %>%
+      arrange(desc(leverage_columns))
+
+
+
+    if(k==1){
+      leverage_rows <- decomposition$u[, 1]^2%>% matrix(.,nrow(decomposition$u),1)
+    }else({
+      leverage_rows <- decomposition$u[, 1:k]^2
+    })
+
+
+    leverage_rows <- rowSums(leverage_rows)/k*1000
+
+    leverage_rows_sorted <- data.frame(leverage_rows=leverage_rows,
+                                       var_names=1:length(leverage_rows)) %>%
+      arrange(desc(leverage_rows))
+
+
+    if(cur_method=="sample_cur"){
+
+
+
+      leverage_columns_sorted <- leverage_columns_sorted[1:columns,]
+      index_col <- leverage_columns_sorted$var_names
+      leverage_rows_sorted <- leverage_rows_sorted[1:rows, ]
+      index_row <- leverage_rows_sorted$var_names
+
+      density_columns <- NULL
+      density_rows <- NULL
+    }
+
+    if(cur_method=="mixture"){
+
+      columns <- ifelse(columns==1, .99999999, columns)
+      density_columns <- densityMclust(leverage_columns_sorted$leverage_columns)
+      critical_value_columns <- quantileMclust(density_columns, p = c(1-columns))
+      leverage_columns_sorted <- filter(leverage_columns_sorted, leverage_columns>=critical_value_columns)
+      index_col <- leverage_columns_sorted$var_names
+
+
+      rows <- ifelse(rows==1, .99999999, rows)
+      density_rows <- densityMclust(leverage_rows_sorted$leverage_rows)
+      critical_value_rows <- quantileMclust(density_rows, p = c(1-rows))
+      leverage_rows_sorted <- filter(leverage_rows_sorted, leverage_rows>=critical_value_rows)
+      index_row <- leverage_rows_sorted$var_names
+    }
+
+    C_cur <- data[,as.character(index_col)] %>% as.matrix
+    R_cur <- data[index_row, ] %>% as.matrix
+    U_cur <- ginv(C_cur)%*%as.matrix(data)%*%ginv(R_cur)
+    CUR <- C_cur%*%U_cur%*%R_cur
+
+    error_abs <- norm(as.matrix(data)-CUR, type="F")
+    error_rel <- error_abs/norm(as.matrix(data), type="F")
+
+    lista <- list(k=k,
+                  columns=columns,
+                  rows=rows,
+                  relative_error=error_rel)
+
+    lista <- structure(lista, class=c("list", "dCUR"))
+    lista
+  }
+
   if(!parallelize){
 
     result <- mapply(CUR_d2,
@@ -137,95 +230,4 @@ dCUR <- function(data, variables, standardize=FALSE,
 
 }
 
-CUR_d2 <- function(data,k=NULL, rows, columns, cur_method, correlation=NULL,correlation_type,decomposition,cor_name,var_names,variance,...){
 
-
-
-
-  if(k==1){
-    leverage_columns <- decomposition$v[, 1]^2 %>% matrix(.,nrow(decomposition$v),1)
-  }else({
-    leverage_columns <- decomposition$v[, 1:k]^2
-  })
-
-
-
-  if(ncol(correlation)>0){
-    correlation <- cbind(data, correlation)
-    position <- which(names(correlation)==cor_name)
-
-    if(correlation_type=="partial"){
-      correlation <- pcor(correlation,...)$estimate[,position][-position]
-      leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
-    }
-    if(correlation_type=="semipartial"){
-      correlation <- spcor(correlation,...)$estimate[,position][-position]
-      leverage_columns <- ((rowSums(leverage_columns)/k)/(1-correlation^2))*1000
-    }
-  }else({leverage_columns <- rowSums(leverage_columns)/k*1000})
-
-  leverage_columns_sorted <- data.frame(leverage_columns=leverage_columns,
-                                        var_names=var_names) %>%
-    arrange(desc(leverage_columns))
-
-
-
-  if(k==1){
-    leverage_rows <- decomposition$u[, 1]^2%>% matrix(.,nrow(decomposition$u),1)
-  }else({
-    leverage_rows <- decomposition$u[, 1:k]^2
-  })
-
-
-  leverage_rows <- rowSums(leverage_rows)/k*1000
-
-  leverage_rows_sorted <- data.frame(leverage_rows=leverage_rows,
-                                     var_names=1:length(leverage_rows)) %>%
-    arrange(desc(leverage_rows))
-
-
-  if(cur_method=="sample_cur"){
-
-
-
-    leverage_columns_sorted <- leverage_columns_sorted[1:columns,]
-    index_col <- leverage_columns_sorted$var_names
-    leverage_rows_sorted <- leverage_rows_sorted[1:rows, ]
-    index_row <- leverage_rows_sorted$var_names
-
-    density_columns <- NULL
-    density_rows <- NULL
-  }
-
-  if(cur_method=="mixture"){
-
-    columns <- ifelse(columns==1, .99999999, columns)
-    density_columns <- densityMclust(leverage_columns_sorted$leverage_columns)
-    critical_value_columns <- quantileMclust(density_columns, p = c(1-columns))
-    leverage_columns_sorted <- filter(leverage_columns_sorted, leverage_columns>=critical_value_columns)
-    index_col <- leverage_columns_sorted$var_names
-
-
-    rows <- ifelse(rows==1, .99999999, rows)
-    density_rows <- densityMclust(leverage_rows_sorted$leverage_rows)
-    critical_value_rows <- quantileMclust(density_rows, p = c(1-rows))
-    leverage_rows_sorted <- filter(leverage_rows_sorted, leverage_rows>=critical_value_rows)
-    index_row <- leverage_rows_sorted$var_names
-  }
-
-  C_cur <- data[,as.character(index_col)] %>% as.matrix
-  R_cur <- data[index_row, ] %>% as.matrix
-  U_cur <- ginv(C_cur)%*%as.matrix(data)%*%ginv(R_cur)
-  CUR <- C_cur%*%U_cur%*%R_cur
-
-  error_abs <- norm(as.matrix(data)-CUR, type="F")
-  error_rel <- error_abs/norm(as.matrix(data), type="F")
-
-  lista <- list(k=k,
-                columns=columns,
-                rows=rows,
-                relative_error=error_rel)
-
-  lista <- structure(lista, class=c("list", "dCUR"))
-  lista
-}

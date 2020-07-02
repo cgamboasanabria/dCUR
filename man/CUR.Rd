@@ -8,8 +8,10 @@ Extension of classic CUR descomposition with top scores selection criteria.
 This function computes the canonical CUR decomposition using top scores as selection criteria to identify the most relevant columns and rows. This function includes the reconfiguration of leverage scores with the partial and semi partial correlations with and external variable and the selection of rows and columns by adjusting the probability distribution of leverage scores with mixtures Gaussian models.
 }
 \usage{
- CUR(data, variables, k = NULL, rows, columns, standardize = FALSE,
-     cur_method = "sample_cur", correlation=NULL, correlation_type = c("partial", "semipartial"), ...)
+ CUR(data,variables,k=NULL,rows,columns,
+ standardize=FALSE,cur_method="sample_cur",
+ correlation=NULL,
+ correlation_type=c("partial","semipartial"),...)
 }
 \arguments{
   \item{data}{
@@ -73,21 +75,16 @@ Drineas, P., Mahoney, M. W., & Muthukrishnan, S. (2008). Relative-error cur matr
 result <- CUR(data=AASP, variables=hoessem:notabachillerato,
                  k=20, rows = 1, columns = .2, standardize = TRUE,
                  cur_method = "sample_cur")
-result$k
-dim(result$CUR)
-result$absolute_error
-result$relative_error
-result$leverage_columns_sorted
-result$leverage_columns
+result
 
-#Extension of classic CUR: Recalibrating leverages scores and adjusting a mixtures Gaussian models to leverages.
+#Extension of classic CUR: Recalibrating leverages scores
+#and adjusting a mixtures Gaussian models to leverages.
 
 result <- CUR(data=AASP, variables=hoessem:notabachillerato,
                  k=20, rows = 1, columns = .2, standardize = TRUE,
-                 cur_method = "mixture", correlation = R1, correlation_type = "partial")
-result$leverage_columns_sorted
-result$absolute_error
-result$relative_error
+                 cur_method = "mixture",
+                 correlation = R1, correlation_type = "partial")
+result
 
 }
 

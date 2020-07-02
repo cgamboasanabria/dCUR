@@ -56,7 +56,7 @@ A brief description
     \item{\code{ChaeaActivo}}{a numeric vector}
     \item{\code{ChaeaTeorico}}{a numeric vector}
     \item{\code{ChaeaReflexivo}}{a numeric vector}
-    \item{\code{ChaeaPragm?tico}}{a numeric vector}
+    \item{\code{ChaeaPragmático}}{a numeric vector}
     \item{\code{MBIEficacia}}{a numeric vector}
     \item{\code{MBIAgotamiento}}{a numeric vector}
     \item{\code{MBICinismo}}{a numeric vector}
@@ -218,17 +218,12 @@ A brief description
     \item{\code{R5}}{a numeric vector}
   }
 }
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
+
 \source{
-https://github.com/cgamboasanabria/dCUR/tree/master/doc/AASP_description_data.xlsx
+https://github.com/cgamboasanabria/dCUR/tree/master/inst/AASP_description_data.xlsx
 }
-\references{
-%%  ~~ possibly secondary sources and usages ~~
-}
+
 \examples{
 data(AASP)
 summary(AASP)
 }
-\keyword{datasets}
