@@ -9,7 +9,7 @@
 
 The CUR theoretical basis comes from the SVD of the matrix of interest to make a new factorization by selecting columns and rows from the original matrix. It is a low-rank approximation to the original matrix expressed in a small number of rows and columns, which are easier to interpret than the singular vectors of the SVD. The main advantage of CUR Decomposition over SVD is that the original data matrix can express a reduced number of rows and columns instead of obtaining factorial axes resulting from a linear combination of all the original variables.
 
-<img src='./inst/flow.jpg' align="center" height="210" /></a>
+<img src='./inst/flow.jpg' align="center" height="720" /></a>
 
 # Installation
 
