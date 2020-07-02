@@ -5,7 +5,8 @@
 Academic Achievment Score Projection
 }
 \description{
-A brief description
+Data from a thesis about academic achievement Projection -aasp-, with 632 rows and 205 columns.
+
 }
 \usage{data("AASP")}
 \format{
