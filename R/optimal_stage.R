@@ -98,8 +98,13 @@ optimal_stage <- function(data, limit=80){
          title=paste("Average relative error with", best_columns$columns, "columns and ", best_rows$rows, "rows by k", sep = " "))
 
   data <- arrange(data, error)
-  error <- filter(data, columns==best_columns$columns & rows==best_rows$rows & k==best_k$k) %>%
-    dplyr::select(error)
+  error <- filter(data, columns==best_columns$columns & rows==best_rows$rows & k==best_k$k)[1,1]
+
+  optimal <- data.frame(k=best_k$k,
+                        columns=best_columns$columns,
+                        rows=best_rows$rows,
+                        error=error)
+
   list(data=data, columns_plot=columns_plot, rows_plot=rows_plot, k_plot=k_plot,
-       optimal=data.frame(best_k, best_columns, best_rows, error))
+       optimal=optimal)
 }

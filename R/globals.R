@@ -2,4 +2,4 @@ utils::globalVariables(c(".", "desc", "components","type","BIC","..density..","x
                          "Cumulative density function", "ppoints","theorical", "quantiles",
                          "sample quantiles", "k", "columns", "rows", "lag", "rate", "rate2", "median",
                          "leverage_columns","density","reorder","var_names","densityMixture",
-                         "theorical quantiles"))
+                         "theorical quantiles", "matrix.data.BIC."))

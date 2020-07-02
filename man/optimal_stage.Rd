@@ -5,10 +5,10 @@
 Select the optimal stage of dynamic CUR descomposition
 }
 \description{
-\code{Optimal_stage} is a function used to select the optimal k, the number of columns and rows of dynamic CUR object, it also produces a data frame and corresponding plots.
+\code{optimal_stage} is a function used to select the optimal k, the number of columns and rows of dynamic CUR object, it also produces a data frame and corresponding plots.
 }
 \usage{
-optimal_stage(x, limit = 80)
+optimal_stage(data, limit = 80)
 }
 
 \arguments{
@@ -28,7 +28,7 @@ The objective of CUR decomposition is to find the most relevant variables and ob
 \item{optimal}{a data frame where the average relative error is showed for optimal k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
 }
 \references{
-Villegas, G., Martin, C., Garcia-Gonzalez, N., Hernandez, S., Sanchez-Barba, M., & Galindo-Villardin, M. P. (2019). Dynamic CUR, an alternative to variable selectin in CUR decomposition. Revista Investigacion Operacional, 40(3), 391-399. Retrieved from https://rev-inv-ope.univ-paris1.fr/fileadmin/rev-inv-ope/files/40319/40319-09.pdf
+Villegas, G., Martin, C., Garcia-Gonzalez, N., Hernandez, S., Sanchez-Barba, M., & Galindo-Villardon, M. P. (2019). Dynamic CUR, an alternative to variable selectin in CUR decomposition. Revista Investigacion Operacional, 40(3), 391-399. Retrieved from https://rev-inv-ope.univ-paris1.fr/fileadmin/rev-inv-ope/files/40319/40319-09.pdf
 }
 \author{
 M.Sc. Cesar Gamboa Sanabria, info@cesargamboasanabria.com, https://orcid.org/0000-0001-6733-4759; M.Sc. Stefany Matarrita Munoz, stefmatarrita@gmail.com, https://orcid.org/0000-0002-1222-1981;
@@ -43,17 +43,17 @@ Ph.D. Maria Purificacion Galindo Villard?n, pgalindo@usal.es, https://orcid.org/
 \code{\link{CUR}}
 }
 \examples{
-data("AASP")
-list <- dCUR::dCUR(data=AASP, variables=hoessem:notabachillerato,
-               k=50, rows=0.5, columns=0.5,skip = 0.1, standardize=TRUE,
+library(dCUR)
+results <- dCUR(data=AASP, variables=hoessem:notabachillerato,
+               k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
                cur_method="sample_cur",
                parallelize =TRUE, dynamic_columns  = TRUE,
                dynamic_rows  = TRUE)
 
-result <- optimal_stage(prueba,limit = 85)
+result <- optimal_stage(results, limit = 80)
 result
 result$k_plot
 result$columns_plot
 result$data
-result$optima}
+result$optimal}
 

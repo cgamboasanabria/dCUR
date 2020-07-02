@@ -1,90 +1,93 @@
 \name{CUR}
 \alias{CUR}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-CUR cl?sico incluyendo la reconfiguraci?n de los puntajes leverages y la selecci?n de filas y columnas ajustando la distribuci?n de probabilidad de los puntajes leverage
+Extension of classic CUR descomposition with top scores selection criteria.
 }
 \description{
-Esta funci?n calcula los puntajes leverage tradicionales seg?n la propuesta metodol?gia de Mahoney & Drineas (2009), se le denomina CUR muestral. Tambi?n tiene una extensi?n al procedimiento cl?sico de Mahoney, el cu?l corresponde a la reconfiguraci?n de los puntajes leverages seg?n la metodolog?a de Villegas et al (2018). Esta metodolog?a consiste en dividir el puntaje leverage por uno menos la correlaci?n parcial o semiparcial al cuadrado que tiene la variable asociada a un puntaje leverage con el prop?sito de recalibrar la importancia relativa de los puntajes leverage en funci?n de su correlaci?n con una variable externa. Tambi?n ajusta la distribuci?n de probabilidad de los puntajes leverage para selecting the best columns and rows that minimize the reconstruction error of the matrix approximation ???A-CUR???.}
-\usage{
-## function (data, variables, k = NULL, rows, columns, standardize = FALSE,
-##     cur_method = "sample_cur", correlation = NULL, correlation_type = c("partial",
-##         "semipartial"), ...)
+
+This function computes the canonical CUR decomposition using top scores as selection criteria to identify the most relevant columns and rows. This function includes the reconfiguration of leverage scores with the partial and semi partial correlations with and external variable and the selection of rows and columns by adjusting the probability distribution of leverage scores with mixtures Gaussian models.
 }
-%- maybe also 'usage' for other objects documented here.
+\usage{
+ CUR(data, variables, k = NULL, rows, columns, standardize = FALSE,
+     cur_method = "sample_cur", correlation=NULL, correlation_type = c("partial", "semipartial"), ...)
+}
 \arguments{
   \item{data}{
-    corresponde al set de datos, puede incluir o no variables externas}
-  \item{variables}{
-    corresponde a las variables que se utilizan en el an?lisis CUR, con las cuales     se calculan los puntajes leverage, no debe incluir variables externas}
-  \item{k}{
-    corresponde a la cantidad de componentes principales que se utilizan para   calcular los puntajes leverage, si es NULL se considera la cantidad de componentes principales k que acumulan el 80\% de la varaiablidad}
-  \item{rows}{
-    corresponde a la cantidad de filas que se desean seleccionar, obtenida esa cantidad como un porcentaje del ?rea bajo la curva de la distribuci?n de los puntajes leverage de las filas (\% *n?mero de filas)}
-  \item{columns}{
-    corresponde a la cantidad de columnas que se desean seleccionar, obtenida esa cantidad como un porcentaje del ?rea bajo la curva de la distribuci?n de los puntajes leverage de las columnas (\% *n?mero de columnas)}
-  \item{standardize}{
-     standardize logical.Si \code{TRUE} los datos se estandarizan (restando el promedio y dividiendo por la desviaci?n est?ndar)}
-  \item{cur_method = "sample_cur"}{
-    corresponde al m?todo muestral que consiste en el c?lculo de los puntajes leverage de manera cl?sica segun Mahoney & Drineas (2009)}
-  \item{correlation}{
-    corresponde a la selecci?n del cambio de m?todo de c?lculo de los puntajes leverages, seg?n la metodolog?a Villegas (2018) y Villegas, et al. (2019) puede tener dos opciones correlaci?n parcial o semiparcial. The partial correlation can be explained as the association between two random variables after eliminating the effect of all other random variables. the semi-partial correlation eliminates the effect of a fraction of other random variables, for instance, removing the effect of all other random variables from just one of two interesting random variables.  The rationale for the partial and semi-partial correlations is to estimate a direct relationship or association between two random variables.}
-  \item{correlation_type}{
-    corresponde a la selecci?n del tipo de correlaci?n que se utiliza, sea parcial o semiparcial seg?n Seongho (2015) del paquete en R ppcor}
+    a data frame which contains the variables to use in CUR descomposition and other externals variables you want to correlate with.}
+  \item{variables}{corresponds to the variables used to compute the leverage scores in CUR analysis. The external variable's names mus not be included. Dplyr notation can be used to specify the variables (see example).}
+  \item{k}{corresponds to the number of main components used to compute the leverage scores. If NULL it is considered the number of k main components that accumulate 80\% of the variability explained. It can also be a proportion, in this case the function takes this value as the desired cumulative explained variance  and automaticalyy choose the k.}
+  \item{rows}{corresponds to the proportion of rows to be selected from the total number of rows in the data matrix. When all the rows are needed and \code{mixture} is used as cur_method, a proportion of 0.999 must be used.}
+  \item{columns}{corresponds to the proportion of columns (variables) to be selected from the total number of variables in the data matrix.}
+  \item{standardize}{If \code{TRUE} the data is standardized (by subtracting the average and dividing by the standard deviation)}
+  \item{cur_method}{character.If \code{sample_cur} the selection of leverage scores is made according to the top score selection criteria set out by Mahoney & Drineas (2009). If \code{mixture} method is specified, a probabilistic mixture gaussian model is fitted for the leverages, and the selection of the most relevant variables is based on a tabular value given a critical area.}
+     \item{correlation}{character. It specifies the name of the external variable the computation of leverage must be adjusted with.}
+  \item{correlation_type}{character. It specifies if the computation of leverage must be adjusted by the \code{semipartial} or \code{partial} correlation with an external variable.}
+  \item{...}{additional arguments to be passed to \code{\link{pcor}} or \code{\link{spcor}}}
 }
 \details{
-Mahoney & Drineas (2009) identified the singular vectors of the SVD as the PCs' interpretation problem and proposed another type of matrix factorization known as CUR Decomposition (Mahoney & Drineas, 2009; Mahoney, Maggioni, & Drineas, 2008; Bodor, Csabai, Mahoney, & Solymosi, 2012). The goal of CUR Decomposition is to give a better interpretation of the matrix decomposition by means of relevant variable selection in the data matrix, in a way that yields a simplified structure. Its origins come from analysis in genetics. One example is the one showed in Mahoney & Drineas (2009), in which cancer microarrays are highlighted with the purpose of recognizing, based on 5000 variables, genetic patterns in patients with soft tissue tumors analyzed with cDNA microarrays.
-The CUR theoretical basis comes from the SVD of the matrix of interest, in order to make a new factorization by selecting columns and rows from the original matrix. This is basically a low-rank approximation to the original matrix expressed in a small number of rows and/or columns, which are easier to interpret than the singular vectors of the SVD. The main advantage of CUR Decomposition over SVD is that the original data matrix can be expressed with a reduced number of rows and columns instead of obtaining factorial axes that result of a linear combination of all the original variables.
-The objective of this package is to show an alternative to variable selection (columns) or individuals (rows) to the ones developed by Mahoney & Drineas (2009). The idea proposed consists of adjusting the probability distributions to the leverage scores and selecting the best columns and rows that minimize the reconstruction error of the matrix approximation ???A-CUR???}
+
+The CUR theoretical basis comes from the SVD of the matrix of interest to make a new factorization by selecting columns and rows from the original matrix. It is a low-rank approximation to the original matrix expressed in a small number of rows and columns, which are easier to interpret than the singular vectors of the SVD. The main advantage of CUR Decomposition over SVD is that the original data matrix can express a reduced number of rows and columns instead of obtaining factorial axes resulting from a linear combination of all the original variables.
+
+This function calculates the traditional leverage scores according to the proposal of Mahoney & Drineas (2009). The top.score method of Mahoney and Drineas is called sample CUR. The extension to Mahoney's standard procedure corresponds to the reconfiguration of the leverage scores according to the methodology of Villegas et al. (2018). This methodology consists in dividing the leverage score by \deqn{(1-\rho^2)}{(1-rho^2)}. \deqn{\rho} rho represents the partial or semi-partial correlation that the variables used in CUR decomposition have with an external variable, and its purpose is recalibrating the relative importance of the leverage scores according to an external variable of user's interested.
+
+The partial correlation can be explained as the association between two random variables after eliminating all other random variables. The semi-partial correlation eliminates the effect of a fraction of other random variables, for instance, removing all other random variables from just one of two interesting random variables. The rationale for the partial and semi-partial correlations is to estimate a direct relationship or association between two random variables.
+The correlation type selection could be partial or semi-partial, according to Seongho (2015) of the package in R ppcor.
+
+The extension to Mahoney's standard procedure includes the adjustment of a probability distribution of the leverage scores to select the best columns and rows that minimize the reconstruction error of the matrix approximation \deqn{|A-CUR|}{|A-CUR|}.
+}
+
 \value{
- CUR retorna los siguientes resultadosel n?mero de componentes principales con los que se calcula los puntajes leverage, la dimensi?n de la matriz original, el error absoluto ???A-CUR???,e lerror relativo ???A-CUR ???/  ???A ???, los puntajes leverage de todas las columnas ordenadas de mayor a menor seg?n el valor del puntaje leverage,
 
- R,??un data frame indicando para cada componente el porcentaje de variabilidad explicada.
-
-\item{resultado$k}{N?mero de componentes principales con los que se calcula los puntajes leverage}
-\item{dim(resultado$CUR) }{Dimensi?n de la matriz CUR}
-\item{resultado$absolute_error}{Error absoluto ???A-CUR???}
-\item{dim(resultado$relative_error) }{Error relativo ???A-CUR???/???A??? }
-\item{dim(resultado$leverage_columns_sorted) }{Nombre de las columnas y puntaje leverage columnas ordenados de mayor a menor}
-\item{resultado$leverage_rows_sorted }{N?mero de las filas y puntajes leverage filas ordenados de mayor a menor}
-\item{resultado$leverage_columns }{Todos los leverages de todas las columnas usando head}
-\item{resultado$leverage_rows }{Todoslos leverages de todas las filas usando head}
+\item{k}{Number of principal components with which leverages scores are computed.}
+\item{CUR}{CUR matrix.}
+\item{absolute_error}{Absolute error computed as the Frobenius norm of the orginal data and CUR matrix: \\|A-CUR\\|}
+\item{relative_error)}{Relative error \deqn{\frac{|A-CUR}{A}}{|A-CUR|/|A|}}
+\item{leverage_columns_sorted}{ a data frame which specifies the names of relevant columns and leverages scores arranged downwardly.}
+\item{leverage_rows_sorted }{a data frame which specifies the number of relevant rows and leverages scores arranged downwardly.}
+\item{leverage_columns }{a data frame which specifies the names of all columns and its leverages scores.}
+\item{leverage_rows }{a data frame which specifies the number of rows and its leverages scores.}
 }
+
+
+\author{M.Sc. Cesar Gamboa Sanabria, info@cesargamboasanabria.com, https://orcid.org/0000-0001-6733-4759; M.Sc. Stefany Matarrita Muoz,stefmatarrita@gmail.com, https://orcid.org/0000-0002-1222-1981;
+M.Sc. Katherine Barquero Mejias, kath30.bm@gmail.com, https://orcid.org/0000-0003-1760-9026; Ph.D. Greibin Villegas Barahona,gvillegas@uned.ac.cr, https://orcid.org/0000-0002-4380-0812;
+Ph.D. Mercedes Sanchez Barba,mersanbar@usal.es, https://orcid.org/000-0002-3324-5798;
+Ph.D. Maria Purificacion Galindo Villardon, pgalindo@usal.es, https://orcid.org/0000-0001-6977-7545}
+
 \references{
-}
-\author{
 Mahoney, M. W., & Drineas, P. (2009). {CUR} matrix decompositions for improved data analysis. Proceedings of the National Academy of Sciences of the United States of America, 106(3), 697-702. http://doi.org/10.1073/pnas.0803205106
+
 Seongho, K. (2015). ppcor: An R Package for a Fast Calculation to Semi-partial Correlation Coefficients. Commun Stat Appl Methods, 22(6), 665-674. https://doi.org/10.5351/CSAM.2015.22.6.665.ppcor
-Villegas, B. G. (2018). Modelo estad?stico pedag?gico para la toma de decisiones administrativas y acad?micas con impacto en el mejoramiento continuo del rendimiento de los estudiantes universitarios, basado en los m?todos de selecci?n CUR. Universidad de Salamanca. Retrieved from https://gredos.usal.es/handle/10366/139405
-Villegas, G., Mart?n, C., Garc?a-Gonz?lez, N., Hern?ndez, S., S?nchez-Barba, M., & Galindo-Villard?n, M. P. (2019). Dynamic CUR, an alternative to variable selectin in CUR decomposition. Revista Investigaci?n Operacional, 40(3), 391-399. Retrieved from https://rev-inv-ope.univ-paris1.fr/fileadmin/rev-inv-ope/files/40319/40319-09.pdf
-}
-\note{
-%%  ~~further notes~~
-}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+Villegas, B. G. (2018). Modelo estadistico pedagogico para la toma de decisiones administrativas y academicas con impacto en el mejoramiento continuo del rendimiento de los estudiantes universitarios, basado en los metodos de seleccion CUR. Universidad de Salamanca. Retrieved from https://gredos.usal.es/handle/10366/139405
 
-\seealso{
+Villegas, G., Martin, C., Garcia-Gonzalez, N., Hernandez, S., Sanchez-Barba, M., & Galindo-Villardon, M. P. (2019). Dynamic CUR, an alternative to variable selectin in CUR decomposition. Revista Investigacion Operacional, 40(3), 391-399. Retrieved from https://rev-inv-ope.univ-paris1.fr/fileadmin/rev-inv-ope/files/40319/40319-09.pdf
+
 Bodor, A. A., Csabai, I. I. I., Mahoney, M. W., & Solymosi, N. (2012). rCUR: an R package for CUR matrix decomposition. BMC BIOINFORMATICS, 13(1), 103. https://doi.org/10.1186/1471-2105-13-103
 Drineas, P., Mahoney, M. W., & Muthukrishnan, S. (2008). Relative-error cur matrix decompositions. SIAM Journal on Matrix Analysis and Applications, 30(2), 844-881. https://doi.org/10.1137/07070471X
 }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
 
-## The function is currently defined as
-function (x)
-{
-  }
+\examples{
+
+#Classic CUR with top scores selection criteria.
+result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+                 k=20, rows = 1, columns = .2, standardize = TRUE,
+                 cur_method = "sample_cur")
+result$k
+dim(result$CUR)
+result$absolute_error
+result$relative_error
+result$leverage_columns_sorted
+result$leverage_columns
+
+#Extension of classic CUR: Recalibrating leverages scores and adjusting a mixtures Gaussian models to leverages.
+
+result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+                 k=20, rows = 1, columns = .2, standardize = TRUE,
+                 cur_method = "mixture", correlation = R1, correlation_type = "partial")
+result$leverage_columns_sorted
+result$absolute_error
+result$relative_error
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
-% Use only one keyword per line.
-% For non-standard keywords, use \concept instead of \keyword:
-% \concept{ ~cpt1 }
-% \concept{ ~cpt2 }
-% Use only one concept per line.
 
