@@ -1,3 +1,71 @@
+#' CUR
+#'
+#' Extension of classic CUR descomposition with top scores selection criteria.
+#'
+#' @description
+#' This function computes the canonical CUR decomposition using top scores as selection criteria to identify the most relevant columns and rows of a given data matrix. It also provides an option to use an extension of CUR decomposition, which reconfigures leverage scores with the partial and semi partial correlations with an external variable of interest. Additionally, this function lets the user fit a probability distribution of leverage scores with Mixtures Gaussian Models.
+#'
+#' @param data a data frame containing the variables to be used in CUR decomposition and other externals variables with which you want to correlate.
+#' @param variables correspond to the variables used to compute the leverage scores in CUR analysis. The external variable’s names must not be included. dplyr package notation can be used to specify the variables (see the example).
+#' @param k corresponds to the number of principal components used to compute the leverage scores. If NULL, it is considered the number of k main components that accumulate 80\% of the variability explained. This argument can also be a proportion, in which case the function takes this value as the desired cumulative explained variance and automatically chooses the k.
+#' @param rows correspond to the proportion of rows to be selected from the total number of rows in the data matrix. When all the rows are needed and \code{mixture} is used as cur_method, a proportion of 0.999 must be used.
+#' @param columns correspond to the proportion of columns (variables) to be selected from the total number of variables in the data matrix.
+#' @param standardize If \code{TRUE} the data is standardized (by subtracting the average and dividing by the standard deviation)
+#' @param cur_method character. If \code{sample_cur}, the selection of leverage scores is made according to the top score selection criteria set out by Mahoney & Drineas (2009). If \code{mixture} method is specified, the best Mixture Gaussian Model is fitted for the leverages, and the selection of the most relevant variables is based on a tabular value given the critical area specified in rows and columns arguments.
+#' @param correlation character. It specifies the name of the external variable the computation of leverage must be adjusted with.
+#' @param correlation_type character. It specifies if the computation of leverage must be adjusted by the \code{semipartial} or \code{partial} correlation with an external variable.
+#' @param ... additional arguments to be passed to \code{\link{pcor}} or \code{\link{spcor}}
+#'
+#' @details
+#'
+#' CUR decomposition chooses columns and rows that exhibit high leverage scores and exert a disproportionately large “influence” on the best low-rank fit of the data matrix. The main advantage of CUR Decomposition over SVD is that the original data matrix can be expressed as a reduced number of rows and columns instead of obtaining factorial axes resulting from a linear combination of all the original variables to facilitate interpretation.
+#'
+#' The reconfiguration of the leverage scores according to the methodology of Villegas et al. (2018). Dividing the leverage score by \eqn{(1-\rho^2)}{(1-rho^2)}. Where \eqn{\rho} rho represents the partial or semi-partial correlation that the variables used in CUR decomposition have with an external variable, its purpose is recalibrating the relative importance of the leverage scores according to an external variable of interest.
+#'
+#' The correlation type selection could be partial or semi-partial, according to Seongho (2015) of the package in R ppcor.
+#'
+#' @return
+#'
+#' \item{k}{Number of principal components with which leverages scores are computed.}
+#' \item{CUR}{CUR matrix.}
+#' \item{absolute_error}{Absolute error computed as the Frobenius norm of the original data -detnoted as A- and CUR matrix: ||A-CUR||}
+#' \item{relative_error)}{Relative error \eqn{\frac{||A-CUR||}{||A||}}}
+#' \item{leverage_columns_sorted}{a data frame which specifies the names of relevant columns and its leverages scores arranged downwardly.}
+#' \item{leverage_rows_sorted }{a data frame which specifies the number of relevant rows and its leverages scores arranged downwardly.}
+#' \item{leverage_columns }{a data frame which specifies the names of all columns and its leverages scores.}
+#' \item{leverage_rows }{a data frame which specifies the number of all rows and its leverages scores.}
+#'
+#' @examples
+#'
+#'  #Classic CUR with top scores selection criteria.
+#'  result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+#'            k=20, rows = 1, columns = .2, standardize = TRUE,
+#'            cur_method = "sample_cur")
+#'  result
+
+#' #Extension of classic CUR: Recalibrating leverages scores
+#' #and adjusting a mixtures Gaussian models to leverages.
+
+#'  result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+#'            k=20, rows = 1, columns = .2, standardize = TRUE,
+#'            cur_method = "mixture",
+#'            correlation = R1, correlation_type = "partial")
+#'  result
+#'
+#'
+#' @author
+#'
+#' Cesar Gamboa Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.
+#'
+#' @references
+#'
+#' \insertRef{Mahoney697}{dCUR}
+#' \insertRef{villegas2018modelo}{dCUR}
+#' \insertRef{dynamyCUR}{dCUR}
+#' \insertRef{relativeE}{dCUR}
+#'
+#' @export
+
 CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_method="sample_cur", correlation=NULL,correlation_type=c("partial", "semipartial"),...){
 
   fun_args <- stackoverflow::match.call.defaults(expand.dots = FALSE) %>% as.list
@@ -107,7 +175,7 @@ CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_m
   error_abs <- norm(as.matrix(data)-CUR, type="F")
   error_rel <- error_abs/norm(as.matrix(data), type="F")
 
-  lista <- list(U=decomposition$u,
+  list1 <- list(U=decomposition$u,
                 D=decomposition$d,
                 V=decomposition$v,
                 sigma=sigma,
@@ -127,7 +195,7 @@ CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_m
                 density_columns=density_columns,
                 density_rows=density_rows
   )
-  lista <- structure(lista, class=c("list", "CUR"))
-  lista
+  list1 <- structure(list1, class=c("list", "CUR"))
+  list1
 
 }

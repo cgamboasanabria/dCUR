@@ -1,3 +1,53 @@
+#' dCUR
+#'
+#' @description
+#' Dynamic CUR is a function that boosts the CUR decomposition varying the k, number of columns, and rows used. Its ultimate purpose is to find the stage which minimizes the relative error. The classic CUR and its extensions can be used in \code{dCUR}.
+#'
+#' @param data a data frame that contains the variables to use in CUR decomposition and other externals variables with which you want to correlate.
+#' @param variables correspond to the variables used to compute the leverage scores in CUR analysis. The external variable’s names must not be included. dplyr package notation can be used to specify the variables (see examples).
+#' @param standardize logical. If \code{TRUE} the data is standardized (by subtracting the average and dividing by the standard deviation)
+#' @param dynamic_columns logical. If \code{TRUE}, an iterative process begins where leverage scores are computed for the different values from 1 to k main components, as well as from 1 to c (the proportion of columns to be selected from the data matrix).
+#' @param dynamic_rows logical. If \code{TRUE}, an iterative process begins where leverage scores are computed for the different values from 1 to k main components, as well as from 1 to r (the proportion of rows to be selected from the data matrix).
+#' @param skip numeric. It specifies the change ratio of columns and rows to be selected.
+#' @param parallelize logical.If\code{TRUE} the CUR analysis is parallelized.
+#' @param ... additional arguments to be passed to \code{\link{CUR}}.
+#'
+#' @details
+#'
+#' This function serves as a basis for selecting the best combination of k (principal components), c (number of columns) and r (number of rows), in other words, the stage that minimizes the relative error \eqn{\frac{||A-CUR||}{||A||}}, and thus optimizes the number of columns in the analysis, ensuring a percentage of explained variability of the data matrix and facilitating the interpretation of the data set by reducing the dimensionality of the original matrix.
+#'
+#' If \code{skip = 0.1} for each k, it is tested with a column proportion of 0, 0.1, 0.11,0.22,...; the same applies for rows. Given the above, it is recommended not to choose a tiny skip, since this implies doing the CUR analysis for more stages.
+#'
+#' Parallelizing the function improves its speed significantly.
+#' @return
+#'
+#' CUR returns a list of lists, each one represents a stage, and it contains:
+#'
+#' \item{k}{Number of principal components with which leverages scores are computed.}
+#' \item{columns}{number of columns selected.}
+#' \item{rows}{number of rows selected.}
+#' \item{relative_error}{relative_error obtained: \eqn{\frac{||A-CUR||}{||A||}}}
+#'
+#' @examples
+#'
+#'  results <- dCUR::dCUR(data=AASP, variables=hoessem:notabachillerato,
+#'  k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
+#'  cur_method="sample_cur",
+#'  parallelize =TRUE, dynamic_columns  = TRUE,
+#'  dynamic_rows  = TRUE)
+#'  results
+#'
+#'
+#' @author
+#'
+#' Cesar Gamboa Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.
+#'
+#' @seealso
+#'
+#' \code{\link{CUR}}
+#' \code{\link{optimal_stage}}
+#'
+#' @export
 dCUR <- function(data, variables, standardize=FALSE,
                  dynamic_columns=FALSE, dynamic_rows=FALSE, parallelize=FALSE,
                  skip=0.05,...){

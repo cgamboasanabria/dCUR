@@ -1,3 +1,34 @@
+#' relevant_variables_plot
+#'
+#' Relevant Variables Plot
+#'
+#' @description
+#' \code{relevant_variables_plot} returns a bar graph which contains the leverages of the most relevant variable of data matrix according to CUR decomposition.
+#'
+#' @param data An object resulting from a call to CUR.
+#'
+#' @examples
+#'
+#' result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+#' k=20, rows = 1, columns = .2, standardize = TRUE,
+#' cur_method = "sample_cur")
+#' relevant_variables_plot(result)
+#'
+#'
+#' @author
+#'
+#' Cesar Gamboa Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.
+#'
+#' @seealso
+#'
+#' \code{\link{dCUR}}
+#' \code{\link{CUR}}
+#'
+#' @references
+#'
+#' \insertRef{dynamyCUR}{dCUR}
+#'
+#' @export
 relevant_variables_plot <- function(data){
 
   plot1 <- data.frame(leverage_columns=data$leverage_columns) %>%

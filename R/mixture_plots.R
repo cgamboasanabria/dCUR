@@ -1,3 +1,45 @@
+#' mixture_plots
+#'
+#' Gaussian Mixture Models Plots
+#'
+#' @description
+#'
+#' This function returns different plots associated with the fitting of leverages scores through Mixture Gaussian Models.
+#'
+#' @param data An object resulting from a call to CUR when "mixture" is specified as cur_method.
+#'
+#' @return
+#' \code{mixture_plots} returns a list with the following plots:
+#'
+#' \item{BIC}{BIC Plot of the Bayesian Information Criterion (BIC) for each number of mixture components. E and V stands for equal variance in mixture components or variable variance, respectively.}
+#' \item{density}{leverages score's density}
+#' \item{Cumulative}{cumulative density of leverages scores.}
+#' \item{QQPlot}{Plot the sample quantiles and controlled quantiles of the inverse of the cumulative distribution function.}
+#'
+#' @examples
+#'
+#' results <- CUR(data=AASP, variables=hoessem:notabachillerato,
+#' k=20, rows = .9999999, columns = .10, standardize = TRUE,
+#' cur_method = "mixture")
+#' mixture_plots(results)
+#'
+#'
+#' @author
+#'
+#' Cesar Gamboa Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.
+#'
+#' @seealso
+#'
+#' \code{\link{dCUR}}
+#' \code{\link{CUR}}
+#'
+#' @references
+#'
+#' \insertRef{Mahoney697}{dCUR}
+#' \insertRef{villegas2018modelo}{dCUR}
+#' \insertRef{dynamyCUR}{dCUR}
+#'
+#' @export
 mixture_plots <- function(data){
 
   leverage_columns <- data$leverage_columns

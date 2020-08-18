@@ -1,3 +1,54 @@
+#' optimal_stage
+#'
+#' Select the optimal stage of dynamic CUR descomposition
+#'
+#' @description
+#' \code{optimal_stage} is a function used to select the optimal k, the number of columns and rows of dynamic CUR object; it also produces a data frame and corresponding plots.
+#'
+#' @param data An object resulting from a call to dCUR.
+#' @param limit Cumulative percentage average of relative error rate.
+#'
+#' @details
+#'
+#' The objective of CUR decomposition is to find the most relevant variables and observations within a data matrix to reduce the dimensionality. It is well known that as more columns (variables) and rows are selected, the relative error will decrease; however, this is not true for k (number of components to compute leverages). Given the above, this function seeks to find the best-balanced stage of k, the number of relevant columns, and rows that have an error very close to the minimum, but at the same time maintain the low-rank fit of the data matrix.
+#'
+#' @return
+#'
+#' \item{data}{a data frame which specifies the relative error for each stage of CUR decomposition.}
+#' \item{rows_plot}{a plot where the average relative error is shown for each number of relevant rows selected.}
+#' \item{columns_plot}{a plot where the average relative error is shown for each number of relevant columns selected.}
+#' \item{k_plot}{a plot where the average relative error is shown for each k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
+#' \item{optimal}{a data frame where the average relative error is shown for optimal k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
+#'
+#' @examples
+#'
+#' results <- dCUR(data=AASP, variables=hoessem:notabachillerato,
+#' k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
+#' cur_method="sample_cur",
+#' parallelize =TRUE, dynamic_columns  = TRUE,
+#' dynamic_rows  = TRUE)
+#' result <- optimal_stage(results, limit = 80)
+#' result
+#' result$k_plot
+#' result$columns_plot
+#' result$data
+#' result$optimal
+#'
+#'
+#' @author
+#'
+#' Cesar Gamboa Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.
+#'
+#' @seealso
+#'
+#' \code{\link{dCUR}}
+#' \code{\link{CUR}}
+#'
+#' @references
+#'
+#' \insertRef{dynamyCUR}{dCUR}
+#'
+#' @export
 optimal_stage <- function(data, limit=80){
 
   data <- lapply(data, function(x){
