@@ -69,7 +69,7 @@ Parallelizing the function improves its speed significantly.
 \code{\link{optimal_stage}}
 }
 \author{
-Cesar Gamboa Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.
+Cesar Gamboa-Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.
 
-César Gamboa-Sanabria \email{info@cesargamboasanabria.com}
+Cesar Gamboa-Sanabria \email{info@cesargamboasanabria.com}
 }

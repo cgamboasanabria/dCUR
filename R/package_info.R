@@ -6,7 +6,7 @@
 #'
 #' @author
 #'
-#' César Gamboa-Sanabria \email{info@cesargamboasanabria.com}
+#' Cesar Gamboa-Sanabria \email{info@cesargamboasanabria.com}
 #'
 #' @name dCUR
 #'
