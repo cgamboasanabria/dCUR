@@ -42,14 +42,14 @@ CUR(
 \item{k}{Number of principal components with which leverages scores are computed.}
 \item{CUR}{CUR matrix.}
 \item{absolute_error}{Absolute error computed as the Frobenius norm of the original data -detnoted as A- and CUR matrix: ||A-CUR||}
-\item{relative_error)}{Relative error \eqn{\frac{||A-CUR||}{||A||}}}
+\item{relative_error}{Relative error \eqn{\frac{||A-CUR||}{||A||}}}
 \item{leverage_columns_sorted}{a data frame which specifies the names of relevant columns and its leverages scores arranged downwardly.}
 \item{leverage_rows_sorted }{a data frame which specifies the number of relevant rows and its leverages scores arranged downwardly.}
 \item{leverage_columns }{a data frame which specifies the names of all columns and its leverages scores.}
 \item{leverage_rows }{a data frame which specifies the number of all rows and its leverages scores.}
 }
 \description{
-This function computes the canonical CUR decomposition using top scores as selection criteria to identify the most relevant columns and rows of a given data matrix. It also provides an option to use an extension of CUR decomposition, which reconfigures leverage scores with the partial and semi partial correlations with an external variable of interest. Additionally, this function lets the user fit a probability distribution of leverage scores with Mixtures Gaussian Models.
+This function computes the canonical CUR decomposition using top scores as selection criteria to identify the most relevant columns and rows of a given data matrix. It also provides an option to use an extension of CUR decomposition, which reconfigures leverage scores by using the partial and semi partial correlations with an external variable of interest. Additionally, this function lets the user fit a probability distribution of leverage scores with Mixtures Gaussian Models.
 }
 \details{
 Extension of classic CUR descomposition with top scores selection criteria.
@@ -58,7 +58,7 @@ Extension of classic CUR descomposition with top scores selection criteria.
 
 CUR decomposition chooses columns and rows that exhibit high leverage scores and exert a disproportionately large “influence” on the best low-rank fit of the data matrix. The main advantage of CUR Decomposition over SVD is that the original data matrix can be expressed as a reduced number of rows and columns instead of obtaining factorial axes resulting from a linear combination of all the original variables to facilitate interpretation.
 
-The reconfiguration of the leverage scores according to the methodology of Villegas et al. (2018). Dividing the leverage score by \eqn{(1-\rho^2)}{(1-rho^2)}. Where \eqn{\rho} rho represents the partial or semi-partial correlation that the variables used in CUR decomposition have with an external variable, its purpose is recalibrating the relative importance of the leverage scores according to an external variable of interest.
+The reconfiguration of the leverage scores according to the methodology of Villegas et al. (2018) dividing the leverage score by \eqn{(1-\rho^2)}{(1-rho^2)}. Where \eqn{\rho} rho represents the partial or semi-partial correlation that the variables used in CUR decomposition have with an external variable, its purpose is recalibrating the relative importance of the leverage scores according to an external variable of interest.
 
 The correlation type selection could be partial or semi-partial, according to Seongho (2015) of the package in R ppcor.
 }

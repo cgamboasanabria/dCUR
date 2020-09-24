@@ -1,7 +1,7 @@
 #' dCUR
 #'
 #' @description
-#' Dynamic CUR is a function that boosts the CUR decomposition varying the k, number of columns, and rows used. Its ultimate purpose is to find the stage which minimizes the relative error. The classic CUR and its extensions can be used in \code{dCUR}.
+#' Dynamic CUR is a function that boosts the CUR decomposition varying the k, number of columns, and rows used. Its ultimate purpose is to find the stage which minimizes the relative error. The classic CUR and its extensions can be used in dCUR.
 #'
 #' @param data a data frame that contains the variables to use in CUR decomposition and other externals variables with which you want to correlate.
 #' @param variables correspond to the variables used to compute the leverage scores in CUR analysis. The external variable’s names must not be included. dplyr package notation can be used to specify the variables (see examples).
@@ -9,7 +9,7 @@
 #' @param dynamic_columns logical. If \code{TRUE}, an iterative process begins where leverage scores are computed for the different values from 1 to k main components, as well as from 1 to c (the proportion of columns to be selected from the data matrix).
 #' @param dynamic_rows logical. If \code{TRUE}, an iterative process begins where leverage scores are computed for the different values from 1 to k main components, as well as from 1 to r (the proportion of rows to be selected from the data matrix).
 #' @param skip numeric. It specifies the change ratio of columns and rows to be selected.
-#' @param parallelize logical.If\code{TRUE} the CUR analysis is parallelized.
+#' @param parallelize logical.If \code{TRUE} the CUR analysis is parallelized.
 #' @param ... additional arguments to be passed to \code{\link{CUR}}.
 #'
 #' @details
