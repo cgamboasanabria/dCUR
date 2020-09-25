@@ -17,7 +17,6 @@ Description: Dynamic CUR is an r package that boosts the CUR decomposition varyi
     The objective of this package is to show an alternative to variable selection (columns) or individuals (rows) to the ones developed by Mahoney & Drineas (2009). The idea proposed consists of adjusting the probability distributions to the leverage scores and selecting the best columns and rows that minimize the reconstruction error of the matrix approximation ||A-CUR||. It also includes a method that recalibrates the relative importance of the leverage scores according to an external variable of the user's interest, according to Villegas, Galindo-Villardon and Sanchez-Barba (2018). 
 Imports:
     snow,
-    bibtex,
     parallel,
     magrittr,
     stackoverflow,
@@ -31,6 +30,7 @@ License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RdMacros: Rdpack
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
-    testthat
+    testthat,
+    bibtex

@@ -19,5 +19,5 @@ https://github.com/cgamboasanabria/dCUR/tree/master/inst/AASP_description_data.x
 
 \examples{
 data(AASP)
-summary(AASP)
+dim(AASP)
 }
