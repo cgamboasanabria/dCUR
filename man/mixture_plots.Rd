@@ -24,12 +24,12 @@ This function returns different plots associated with the fitting of leverages s
 Gaussian Mixture Models Plots
 }
 \examples{
-
-#results <- CUR(data=AASP, variables=hoessem:notabachillerato,
-#k=20, rows = .9999999, columns = .10, standardize = TRUE,
-#cur_method = "mixture")
-#mixture_plots(results)
-
+\donttest{
+results <- CUR(data=AASP, variables=hoessem:notabachillerato,
+k=20, rows = .9999999, columns = .10, standardize = TRUE,
+cur_method = "mixture")
+mixture_plots(results)
+}
 
 }
 \references{

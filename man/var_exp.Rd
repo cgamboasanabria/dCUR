@@ -23,9 +23,9 @@ var_exp(data, standardize = FALSE, ...)
 The objective of CUR decomposition is to find the most relevant variables and observations within a data matrix and to reduce the dimensionality. It is well known that as more columns (variables) and rows are selected, the relative error will be lower; however, this is not true for k (number of components to calculate leverages). Given the above, this function seeks to find the best-balanced scenario of k, the number of relevant columns, and rows that have an error very close to the minimum, and that, in turn, uses a smaller amount of information.
 }
 \examples{
-
-#var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
-
+\donttest{
+var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
+}
 }
 \references{
 \insertRef{Mahoney697}{dCUR}

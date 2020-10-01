@@ -16,9 +16,9 @@
 #' \item{var_exp}{a data frame with the proportion of explained variance for each principal component.}
 #'
 #' @examples
-#'
-#' #var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
-#'
+#' \donttest{
+#' var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
+#' }
 #' @author
 #'
 #' Cesar Gamboa-Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.

@@ -29,19 +29,19 @@ Select the optimal stage of dynamic CUR descomposition
 The objective of CUR decomposition is to find the most relevant variables and observations within a data matrix to reduce the dimensionality. It is well known that as more columns (variables) and rows are selected, the relative error will decrease; however, this is not true for k (number of components to compute leverages). Given the above, this function seeks to find the best-balanced stage of k, the number of relevant columns, and rows that have an error very close to the minimum, but at the same time maintain the low-rank fit of the data matrix.
 }
 \examples{
-
-#results <- dCUR(data=AASP, variables=hoessem:notabachillerato,
-#k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
-#cur_method="sample_cur",
-#parallelize =TRUE, dynamic_columns  = TRUE,
-#dynamic_rows  = TRUE)
-#result <- optimal_stage(results, limit = 80)
-#result
-#result$k_plot
-#result$columns_plot
-#result$data
-#result$optimal
-
+\donttest{
+results <- dCUR(data=AASP, variables=hoessem:notabachillerato,
+k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
+cur_method="sample_cur",
+parallelize =TRUE, dynamic_columns  = TRUE,
+dynamic_rows  = TRUE)
+result <- optimal_stage(results, limit = 80)
+result
+result$k_plot
+result$columns_plot
+result$data
+result$optimal
+}
 
 }
 \references{

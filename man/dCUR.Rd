@@ -55,13 +55,14 @@ Parallelizing the function improves its speed significantly.
 }
 \examples{
 
- #results <- dCUR::dCUR(data=AASP, variables=hoessem:notabachillerato,
- #k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
- #cur_method="sample_cur",
- #parallelize =TRUE, dynamic_columns  = TRUE,
- #dynamic_rows  = TRUE)
- #results
-
+\donttest{
+ results <- dCUR::dCUR(data=AASP, variables=hoessem:notabachillerato,
+ k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
+ cur_method="sample_cur",
+ parallelize =TRUE, dynamic_columns  = TRUE,
+ dynamic_rows  = TRUE)
+ results
+}
 
 }
 \seealso{

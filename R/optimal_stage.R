@@ -21,19 +21,19 @@
 #' \item{optimal}{a data frame where the average relative error is shown for optimal k (number of components to compute leverage), given the optimal number of relevant columns and rows.}
 #'
 #' @examples
-#'
-#' #results <- dCUR(data=AASP, variables=hoessem:notabachillerato,
-#' #k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
-#' #cur_method="sample_cur",
-#' #parallelize =TRUE, dynamic_columns  = TRUE,
-#' #dynamic_rows  = TRUE)
-#' #result <- optimal_stage(results, limit = 80)
-#' #result
-#' #result$k_plot
-#' #result$columns_plot
-#' #result$data
-#' #result$optimal
-#'
+#' \donttest{
+#' results <- dCUR(data=AASP, variables=hoessem:notabachillerato,
+#' k=15, rows=0.25, columns=0.25,skip = 0.1, standardize=TRUE,
+#' cur_method="sample_cur",
+#' parallelize =TRUE, dynamic_columns  = TRUE,
+#' dynamic_rows  = TRUE)
+#' result <- optimal_stage(results, limit = 80)
+#' result
+#' result$k_plot
+#' result$columns_plot
+#' result$data
+#' result$optimal
+#' }
 #'
 #' @author
 #'
