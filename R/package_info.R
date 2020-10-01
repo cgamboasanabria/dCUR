@@ -10,7 +10,7 @@
 #'
 #' @name dCUR
 #'
-#' @importFrom Rdpack reprompt
+#' @import Rdpack
 #' @importFrom stackoverflow match.call.defaults
 #' @importFrom mclust densityMclust quantileMclust cdfMclust
 #' @importFrom dplyr select filter mutate rename arrange group_by summarise

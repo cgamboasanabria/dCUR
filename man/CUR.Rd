@@ -65,17 +65,17 @@ The correlation type selection could be partial or semi-partial, according to Se
 \examples{
 
  #Classic CUR with top scores selection criteria.
- result <- CUR(data=AASP, variables=hoessem:notabachillerato,
-           k=20, rows = 1, columns = .2, standardize = TRUE,
-           cur_method = "sample_cur")
- result
+ #result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+ #          k=20, rows = 1, columns = .2, standardize = TRUE,
+ #          cur_method = "sample_cur")
+ #result
 #Extension of classic CUR: Recalibrating leverages scores
 #and adjusting a mixtures Gaussian models to leverages.
- result <- CUR(data=AASP, variables=hoessem:notabachillerato,
-           k=20, rows = 1, columns = .2, standardize = TRUE,
-           cur_method = "mixture",
-           correlation = R1, correlation_type = "partial")
- result
+ #result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+ #          k=20, rows = 1, columns = .2, standardize = TRUE,
+ #          cur_method = "mixture",
+ #          correlation = R1, correlation_type = "partial")
+ #result
 
 
 }

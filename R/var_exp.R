@@ -17,7 +17,7 @@
 #'
 #' @examples
 #'
-#' var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
+#' #var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
 #'
 #' @author
 #'

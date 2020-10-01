@@ -9,10 +9,10 @@
 #'
 #' @examples
 #'
-#' result <- CUR(data=AASP, variables=hoessem:notabachillerato,
-#' k=20, rows = 1, columns = .2, standardize = TRUE,
-#' cur_method = "sample_cur")
-#' relevant_variables_plot(result)
+#' #result <- CUR(data=AASP, variables=hoessem:notabachillerato,
+#' #k=20, rows = 1, columns = .2, standardize = TRUE,
+#' #cur_method = "sample_cur")
+#' #relevant_variables_plot(result)
 #'
 #'
 #' @author

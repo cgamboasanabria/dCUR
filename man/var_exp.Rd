@@ -24,7 +24,7 @@ The objective of CUR decomposition is to find the most relevant variables and ob
 }
 \examples{
 
-var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
+#var_exp(AASP, standardize = TRUE, hoessem:notabachillerato)
 
 }
 \references{
