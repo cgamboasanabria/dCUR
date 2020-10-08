@@ -8,7 +8,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/cgamboasanabria/dCUR)
 ![Maintenance](https://img.shields.io/maintenance/yes/2020)
 ![CRAN/METACRAN](https://img.shields.io/cran/v/dCUR)
-![CRAN downloads](http://cranlogs-dev.r-pkg.org/badges/dCUR)
+![CRAN downloads](https://cranlogs-dev.r-pkg.org/badges/dCUR)
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Website](https://img.shields.io/website?up_color=blue&up_message=https%3A%2F%2Fwww.cesargamboasanabria.com%2F&url=https%3A%2F%2Fwww.cesargamboasanabria.com%2Fes%2F)](https://www.cesargamboasanabria.com/en/)
 
