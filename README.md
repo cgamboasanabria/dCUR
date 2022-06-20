@@ -6,7 +6,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/cgamboasanabria/dCUR)
 ![GitHub issues](https://img.shields.io/github/issues/cgamboasanabria/dCUR)
 ![GitHub last commit](https://img.shields.io/github/last-commit/cgamboasanabria/dCUR)
-![Maintenance](https://img.shields.io/maintenance/yes/2020)
+![Maintenance](https://img.shields.io/maintenance/yes/2022)
 ![CRAN/METACRAN](https://img.shields.io/cran/v/dCUR)
 ![CRAN downloads](http://cranlogs.r-pkg.org/badges/grand-total/dCUR)
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
