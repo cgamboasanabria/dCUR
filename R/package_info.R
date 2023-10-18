@@ -9,9 +9,9 @@
 #' Cesar Gamboa-Sanabria \email{info@cesargamboasanabria.com}
 #'
 #' @name dCUR
+#' @aliases dCUR-package
 #'
 #' @import Rdpack
-#' @importFrom stackoverflow match.call.defaults
 #' @importFrom mclust densityMclust quantileMclust cdfMclust
 #' @importFrom dplyr select filter mutate rename arrange group_by summarise
 #' @importFrom magrittr '%>%'

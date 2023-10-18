@@ -3,6 +3,7 @@
 \docType{package}
 \name{dCUR}
 \alias{dCUR}
+\alias{dCUR-package}
 \title{dCUR}
 \usage{
 dCUR(

@@ -68,7 +68,24 @@
 
 CUR <- function(data, variables, k=NULL, rows, columns, standardize=FALSE, cur_method="sample_cur", correlation=NULL,correlation_type=c("partial", "semipartial"),...){
 
-  fun_args <- stackoverflow::match.call.defaults(expand.dots = FALSE) %>% as.list
+  match.call.defaults <- function(definition = sys.function(sys.parent()),
+                                  call = sys.call(sys.parent()),
+                                  expand.dots = TRUE,
+                                  envir = parent.frame(2L)) {
+    call <- match.call(definition, call, expand.dots, envir)
+    formals <- formals(definition)
+
+    if(expand.dots && '...' %in% names(formals))
+      formals[['...']] <- NULL
+
+    for(i in setdiff(names(formals), names(call)))
+      call[i] <- list( formals[[i]] )
+
+
+    match.call(definition, call, TRUE, envir)
+  }
+
+  fun_args <- match.call.defaults(expand.dots = FALSE) %>% as.list
 
   test_fun <- sapply(fun_args[c("variables", "correlation")], as.expression) %>% paste()
   correlation <- eval(parse(text = paste("dplyr::select(data,", test_fun[2], ")")))
