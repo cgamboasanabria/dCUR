@@ -4,7 +4,7 @@ Title: Dimension Reduction with Dynamic CUR
 Version: 1.0.2
 Depends:
     R (>= 3.5.0)
-Maintainer: Cesar Gamboa <info@cesargamboasanabria.com> 
+Maintainer: Cesar Gamboa-Sanabria <info@cesargamboasanabria.com> 
 URL: https://www.cesargamboasanabria.com
 Authors@R: c(
     person("Cesar", "Gamboa-Sanabria", email="info@cesargamboasanabria.com", role=c( "aut", "mdc", "cph", "cre"), comment=c(ORCID = "0000-0001-6733-4759")),
