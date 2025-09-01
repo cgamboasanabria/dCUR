@@ -10,7 +10,7 @@
 #' @param dynamic_rows logical. If \code{TRUE}, an iterative process begins where leverage scores are computed for the different values from 1 to k main components, as well as from 1 to r (the proportion of rows to be selected from the data matrix).
 #' @param skip numeric. It specifies the change ratio of columns and rows to be selected.
 #' @param parallelize logical.If \code{TRUE} the CUR analysis is parallelized.
-#' @param ... additional arguments to be passed to \code{\link{CUR}}.
+#' @param ... additional arguments to be passed to \code{\link[dCUR]{CUR}}.
 #'
 #' @details
 #'
@@ -45,8 +45,8 @@
 #'
 #' @seealso
 #'
-#' \code{\link{CUR}}
-#' \code{\link{optimal_stage}}
+#' \code{\link[dCUR]{CUR}}
+#' \code{\link[dCUR]{optimal_stage}}
 #'
 #' @export
 dCUR <- function(data, variables, standardize=FALSE,

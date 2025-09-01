@@ -28,8 +28,8 @@ relevant_variables_plot(result)
 \insertRef{dynamyCUR}{dCUR}
 }
 \seealso{
-\code{\link{dCUR}}
-\code{\link{CUR}}
+\code{\link[dCUR]{dCUR}}
+\code{\link[dCUR]{CUR}}
 }
 \author{
 Cesar Gamboa-Sanabria, Stefany Matarrita-Munoz, Katherine Barquero-Mejias, Greibin Villegas-Barahona, Mercedes Sanchez-Barba and Maria Purificacion Galindo-Villardon.

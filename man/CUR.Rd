@@ -36,7 +36,7 @@ CUR(
 
 \item{correlation_type}{character. It specifies if the computation of leverage must be adjusted by the \code{semipartial} or \code{partial} correlation with an external variable.}
 
-\item{...}{additional arguments to be passed to \code{\link{pcor}} or \code{\link{spcor}}}
+\item{...}{additional arguments to be passed to \code{\link[ppcor]{pcor}} or \code{\link[ppcor]{spcor}}}
 }
 \value{
 \item{k}{Number of principal components with which leverages scores are computed.}

@@ -30,8 +30,8 @@
 #'
 #' @seealso
 #'
-#' \code{\link{dCUR}}
-#' \code{\link{CUR}}
+#' \code{\link[dCUR]{dCUR}}
+#' \code{\link[dCUR]{CUR}}
 #'
 #' @references
 #'

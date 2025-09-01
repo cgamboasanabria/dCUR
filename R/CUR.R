@@ -14,7 +14,7 @@
 #' @param cur_method character. If \code{sample_cur}, the selection of leverage scores is made according to the top score selection criteria set out by Mahoney & Drineas (2009). If \code{mixture} method is specified, the best Mixture Gaussian Model is fitted for the leverages, and the selection of the most relevant variables is based on a tabular value given the critical area specified in rows and columns arguments.
 #' @param correlation character. It specifies the name of the external variable the computation of leverage must be adjusted with.
 #' @param correlation_type character. It specifies if the computation of leverage must be adjusted by the \code{semipartial} or \code{partial} correlation with an external variable.
-#' @param ... additional arguments to be passed to \code{\link{pcor}} or \code{\link{spcor}}
+#' @param ... additional arguments to be passed to \code{\link[ppcor]{pcor}} or \code{\link[ppcor]{spcor}}
 #'
 #' @details
 #'

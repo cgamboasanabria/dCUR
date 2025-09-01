@@ -1,10 +1,10 @@
 Package: dCUR
 Type: Package
 Title: Dimension Reduction with Dynamic CUR
-Version: 1.0.1
+Version: 1.0.2
 Depends:
     R (>= 3.5.0)
-Maintainer: Cesar Gamboa <info@cesargamboasanabria.com>
+Maintainer: Cesar Gamboa <info@cesargamboasanabria.com> 
 URL: https://www.cesargamboasanabria.com
 Author: Cesar Gamboa-Sanabria [aut, mdc, cph, cre] (<https://orcid.org/0000-0001-6733-4759>),
     Stefani Matarrita-Munoz [aut] (<https://orcid.org/0000-0002-1222-1981>),
@@ -28,7 +28,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RdMacros: Rdpack
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Suggests: 
     testthat,
     snow
